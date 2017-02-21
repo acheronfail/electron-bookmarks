@@ -79,11 +79,11 @@ fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
 const fs = require('fs');
 const bookmarks = require('electron-bookmarks');
 
-bookmarks.open(myBookmark, function (allowedPath, cb) {
+bookmarks.open(myBookmark, function (allowedPath, close) {
   fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
     if (err) throw err; // null
     else {
-      cb();
+      close();
       // Yay! We have access outside the sandbox!
     }
   });
@@ -104,7 +104,7 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 
 * `key` is a key returned from `bookmarks.showOpenDialog` or from `bookmarks.list`.
 * `callback(allowedPath, close)`
-  * `allowedPath` is the path you must use in order to access your file , eg:`fs.writeFileSync(allowedPath, 'foo')`
+  * `allowedPath` is the path you must use in order to access your file.
   * `close` **IMPORTANT:** this function **MUST** be called once you have finished using the file! If you do not remember to close this, _[kernel resources will be leaked](https://developer.apple.com/reference/foundation/nsurl/1417051-startaccessingsecurityscopedreso?language=objc)_ and your app will lose its ability to reach outside the sandbox completely, until your app is restarted.
 
 #### `bookmarks.list()`
