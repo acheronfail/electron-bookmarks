@@ -1,14 +1,14 @@
 {
-  "name": "dialog",
-  "version": "1.0.0",
-  "description": "",
+  "name": "electron-bookmarks",
+  "version": "0.0.1",
+  "description": "Access to macOS Security-Scoped bookmarks in an electron application",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "acheronfail <acheronfail@gmail.com> ()",
+  "license": "MIT",
   "dependencies": {
     "electron": "^1.4.15",
     "nodobjc": "^2.1.0"
