@@ -127,6 +127,35 @@ const objc = {
     if (!('NSOpenPanel' in $)) $.import('AppKit');
   },
 
+  /**
+   * HACK: Since we don't have the v8 runtime we can't access the electron
+   * window's id or identify it any easy way. So we change it's title, look for
+   * an NSWindow with that title and then restore the previous title.
+   * @param  {BrowserWindow} win
+   * @return {OBJC:NSWindow | $.NIL}
+   */
+  getWindow: function (win) {
+    const windows = $.NSApplication('sharedApplication')('windows'),
+          test = '_DIALOG:AtomNSWindow';
+
+    // Remember old window title, and set title to our test.
+    const windowTitle = win.getTitle();
+    win.setTitle(test);
+
+    // Look through each NSWindow for our title.
+		for (let i = 0, c = windows('count'); i < c; i++) {
+			let NSWindow = windows('objectAtIndex', i);
+			if (NSWindow('title') == test) {
+        win.setTitle(windowTitle);
+        return NSWindow;
+      }
+		}
+
+    // We couldn't find it. Ah well, return NIL.
+    win.setTitle(windowTitle);
+    return $.NIL;
+  },
+
   showOpenDialog: function (win, opts, cb) {
     this.checkImports();
 
@@ -135,15 +164,12 @@ const objc = {
     this.setupDialog(dialog, opts);
     this.setupDialogProperties(dialog, opts.properties);
 
-    // TODO: figure out how to get current electron window...
     const handler = $(this.runModal.bind(this, dialog, opts, cb), ['v',['?', 'i']]);
-    console.warn('Window usage not yet implemented...');
-    dialog('beginSheetModalForWindow', win ? $.NIL : $.NIL, /* TODO: window! */
+    dialog('beginSheetModalForWindow', win ? this.getWindow(win) : $.NIL, /* TODO: window! */
            'completionHandler', handler);
   },
 
   runModal: function (dialog, opts, cb, self, chosen) {
-    console.log(''); // HACK: For some reason if we don't log it hangs here...
     if (chosen == $.NSFileHandlingPanelCancelButton) {
       cb(null);
     } else {
