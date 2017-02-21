@@ -72,13 +72,20 @@ module.exports.open = function (key, cb) {
 									   'bookmarkDataIsStale', stale,
 									 	 'error', error);
 
-  // TODO: handle error correctly.
+  // Handle error.
   if (typeof error == 'function') {
-    // handle error.
+    // TODO: handle error correctly.
   }
 
-  // TODO: handle stale bookmark correctly.
-  // console.log('stale', typeof stale);
+  // Is the bookmark stale?
+  if (typeof stale == $.YES) {
+    replaceStaleBookmark(bookmark, bookmarkStore, defaults);
+  } else if (typeof stale != 'object') {
+    // TODO: We haven't been able to test stale bookmarks. I don't know if
+    // there's a way to "make" a bookmark stale... So we log here in the chance
+    // that when it's stale, and `stale != $.YES` we can see what it is.
+    console.log('STALE: ', stale);
+  }
 
   // Begin accessing the bookmarked resource outside of the sandbox.
   var didAccess = bookmark('startAccessingSecurityScopedResource');
@@ -103,7 +110,7 @@ module.exports.open = function (key, cb) {
   }
 
   // Call the user's callback passing a correct path and the stop function.
-  const filepath = bookmark('absoluteString')('UTF8String').substr(7);
+  const filepath = bookmark('path')('UTF8String');
   cb(filepath, close);
 };
 
@@ -117,3 +124,27 @@ module.exports.delete = function (key) {
   const defaults = $.NSUserDefaults('standardUserDefaults');
   defaults('removeObjectForKey', $(key));
 };
+
+
+// [from Apple's Docs] We should create a new bookmark using the returned URL
+// and use it in place of any stored copies of the existing bookmark.
+function replaceStaleBookmark(bookmark, store, defaults) {
+  let error = $.alloc($.NSError).ref(),
+  const type = store('objectForKey', $('type')),
+        key = store('objectForKey', $('key')),
+        isAppBookmark = type('UTF8String') == 'app';
+
+  // Create new bookmark.
+  const newData = bookmark('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+                           'includingResourceValuesForKeys', $.NIL,
+                           'relativeToURL', isAppBookmark ? $.NIL : bookmark('path'),
+                           'error', error);
+
+  // Save bookmark in place of the old one.
+  const replacement = $.NSMutableDictionary('alloc')('init');
+  replacement('setObject', type, 'forKey', $('type'));
+  replacement('setObject', newData, 'forKey', $('bookmark'));
+
+  defaults('setObject', replacement, 'forKey', $(key));
+  defaults('synchronize');
+}
