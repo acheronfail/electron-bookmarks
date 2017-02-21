@@ -55,8 +55,13 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
   fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
     if (err) throw err; // null
     else {
-      close(); // Bookmark MUST be closed!
       // Yay! We have access outside the sandbox!
+      // We can read/write to this file.
+      
+      // ...
+      
+      // Once finished, we the bookmark *MUST* be closed!
+      close(); 
     }
   });
 });
