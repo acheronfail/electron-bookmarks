@@ -16,8 +16,9 @@ npm install --save electron-bookmarks
 
 This module was created to be a drop-in-replacement for electron's `dialog` module. In order to create a security-scoped bookmark you have to use Use Apple's `Powerbox` API, which is used transparently in the background by `NSOpenPanel` (and `NSSavePanel`). Thus, the need to re-create electron's `dialog` module in order to have access to the `NSURL` class returned by it.
 
-**tl;dr**  
-Change this:
+#### tl;dr
+
+**Change this:**
 ```javascript
 const { dialog, app, BrowserWindow } = require('electron');
 
@@ -26,8 +27,8 @@ app.on('ready', function () {
   
   /* ... */
   
-  dialog.showOpenDialog(win, options, function (selectedPaths) {
-    console.log(selectedPaths); // [ '/path/to/file/' ]
+  dialog.showOpenDialog(win, options, function (filenames) {
+    console.log(filenames); // [ '/path/to/file/' ]
     
     /* ... */
     
@@ -35,7 +36,7 @@ app.on('ready', function () {
 });
 ```
 
-To this:
+**To this:**
 ```javascript
 const { app, BrowserWindow } = require('electron');
 const bookmarks = require('electron-bookmarks');
@@ -45,14 +46,14 @@ app.on('ready', function () {
   
   /* ... */
   
-  bookmarks.showOpenDialog(win, options, function (selectedPaths) {
-    console.log(selectedPaths); // [ '/path/to/file/' ]
+  bookmarks.showOpenDialog(win, options, function (filenames) {
+    console.log(filenames); // [ '/path/to/file/' ]
     /**
-     * `selectedPaths` is an array of paths (exactly like electron's API).
+     * `filenames` is an array of paths (exactly like electron's API).
      * It has a `bookmarks` property in which you can find which bookmarks were 
      * created as the `keys` property.
      */
-    console.log(selectedPaths.bookmarks); // { keys: [ 'bookmark::file:///path/to/file/' ], ... }
+    console.log(filenames.bookmarks); // { keys: [ 'bookmark::file:///path/to/file/' ], ... }
     
     /* ... */
     
@@ -60,19 +61,65 @@ app.on('ready', function () {
 });
 ```
 
-The `keys` property tells you which bookmarks have been saved to `NSUserDefaults` as `NSData` objects. These bookmarks are accessible across app restarts and allow your app to access files outside its sandbox provided you use the APIs correctly.
-
-In order to use a saved bookmark you can use the `use(<key>)` function:
+**And this:**
 ```javascript
-// To be implemented and documented...
+const fs = require('fs');
+
+fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
+  if (err) throw err; // Error: EPERM: operation not permitted, access '/path/to/file'
+  else {
+    // ...
+  }
+});
 ```
 
 
-#### Roadmap and known issues
+**To this:**
+```javascript
+const fs = require('fs');
+const bookmarks = require('electron-bookmarks');
+
+bookmarks.open(myBookmark, function (allowedPath, cb) {
+  fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
+    if (err) throw err; // null
+    else {
+      cb();
+      // Yay! We have access outside the sandbox!
+    }
+  });
+});
+```
+
+#### `bookmarks.showOpenDialog(<`[`see here`](https://github.com/electron/electron/blob/master/docs/api/dialog.md)`>)`
+
+Usually electron's `dialog.showOpenDialog` will return an array of filenames. `electron-bookmarks` returns the same array but with an additional `bookmarks` property attached.
+
+`filenames.bookmarks.keys` tells you which bookmarks have just been saved to `NSUserDefaults` as `NSData` objects. These bookmarks are accessible across app restarts and allow your app to access files outside its sandbox _provided you use the APIs correctly_. Use these `keys` in `bookmarks.open(key, ...)`.
+
+
+#### `bookmarks.showSaveDialog()`
+**Not yet implemented**
+
+#### `bookmarks.open(key, callback)`
+
+* `key` is a key returned from `bookmarks.showOpenDialog` or from `bookmarks.list`.
+* `callback(allowedPath, close)`
+  * `allowedPath` is the path you must use in order to access your file , eg:`fs.writeFileSync(allowedPath, 'foo')`
+  * `close` **IMPORTANT:** this function **MUST** be called once you have finished using the file! If you do not remember to close this, _[kernel resources will be leaked](https://developer.apple.com/reference/foundation/nsurl/1417051-startaccessingsecurityscopedreso?language=objc)_ and your app will lose its ability to reach outside the sandbox completely, until your app is restarted.
+
+#### `bookmarks.list()`
+
+This will return an array of all the keys that you've saved with `electron-bookmarks`. These can be used in order to gain access outside your sandbox.
+
+#### `bookmarks.delete(key)`
+
+**Not yet implemented**
+
+### Roadmap and known issues
 
 - [ ] Create `.showSaveDialog` API
-- [ ] Create `.useBookmark` API
-- [ ] Create `.getAll` API
-- [ ] Create `.deleteBookmark` API
+- [x] Create `.open` API
+- [x] Create `.list` API
+- [ ] Create `.delete` API
 - [ ] Add support for `stale` bookmarks and refresh them.
 - [ ] Support both `main` and `renderer` processes in electron.
