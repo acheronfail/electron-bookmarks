@@ -288,9 +288,14 @@ const objc = {
       return { error: error('localizedDescription') };
     }
 
-    // Save to NSUserDefaults.
-    const key = `bookmark::${urlPath}`;
-    defaults('setObject', bookmarkData, 'forKey', $(key));
+    // Save to NSUserDefaults as { bookmark: NSData, type: "app" or "document" }.
+    let key = `bookmark::${urlPath}`,
+        bookmark = $.NSMutableDictionary('alloc')('init');
+
+    bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
+    bookmark('setObject', bookmarkData, 'forKey', $('bookmark'));
+
+    defaults('setObject', bookmark, 'forKey', $(key));
     return { key: key };
   },
 

@@ -16,7 +16,7 @@ npm install --save electron-bookmarks
 
 This module was created to be a drop-in-replacement for electron's `dialog` module. In order to create a security-scoped bookmark you have to use Use Apple's `Powerbox` API, which is used transparently in the background by `NSOpenPanel` (and `NSSavePanel`). Thus, the need to re-create electron's `dialog` module in order to have access to the `NSURL` class returned by it.
 
-You **must** have the correct entitlements (either `com.apple.security.files.bookmarks.document-scope` or `com.apple.security.files.bookmarks.app-scope`) in your signed electron app ([see here for more information](https://github.com/electron-userland/electron-osx-sign/wiki/3.-App-Sandbox-and-Entitlements)), it **must** have been already packaged for the `mas platform`, and of course, this only runs on `macOS`.
+You **must** have the correct entitlements (either `com.apple.security.files.bookmarks.document-scope` or `com.apple.security.files.bookmarks.app-scope` in conjunction with `com.apple.security.files.user-selected.read-write`) in your signed electron app ([see here for more information](https://github.com/electron-userland/electron-osx-sign/wiki/3.-App-Sandbox-and-Entitlements)), it **must** have been already packaged for the `mas platform`, and of course, this only runs on `macOS`.
 
 #### tl;dr
 
@@ -72,7 +72,7 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
 ### `bookmarks.showOpenDialog(window, options[, callback])`
 
 **In order to use this you must do two things:** 
-1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument.
+1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument. It will default to `"app"`.
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
 Usually electron's `dialog.showOpenDialog` will return an array of filenames. `electron-bookmarks` returns the same array but with an additional argument `bookmarks`.
@@ -83,7 +83,7 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 ### `bookmarks.showSaveDialog()`
 
 **Same as showOpenDialog, you must:** 
-1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument.
+1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument. It will default to `"app"`.
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
 Usually electron's `dialog.showSaveDialog` will return a path. `electron-bookmarks` returns the same path but with an additional argument `bookmark`.

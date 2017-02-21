@@ -16,12 +16,17 @@ module.exports.list = function () {
   checkAppInitialized();
   checkImports();
 
-  const bookmarks = [];
+  const bookmarks = [],
+        defaultsDictionary = $.NSUserDefaults('standardUserDefaults')('dictionaryRepresentation');
 
-  const keys = $.NSUserDefaults('standardUserDefaults')('dictionaryRepresentation')('allKeys');
+  const keys = defaultsDictionary('allKeys');
+
   for (let i = 0, c = keys('count'); i < c; i++) {
-    const item = keys('objectAtIndex', i)('UTF8String');
-    if (item.startsWith('bookmark::')) bookmarks.push(item);
+    const key = keys('objectAtIndex', i)('UTF8String');
+    if (key.startsWith('bookmark::')) {
+      const type = defaultsDictionary('objectForKey', $(key))('objectForKey', $('type'));
+      bookmarks.push({ key: key, type: type });
+    }
   }
 
   return bookmarks;
@@ -46,9 +51,10 @@ module.exports.open = function (key, cb) {
 
   checkImports();
 
-  const defaults = $.NSUserDefaults('standardUserDefaults');
+  const defaults = $.NSUserDefaults('standardUserDefaults'),
+        bookmarkStore = defaults('objectForKey', $(key)),
+        data = bookmarkStore('objectForKey', $('bookmark'));
 
-  const data = defaults('objectForKey', $(key));
   if (!data || typeof data != 'function') {
     throw new TypeError(`Retrieved value from NSUserDefaults is not of type "NSData", got "${data}"`);
   }
