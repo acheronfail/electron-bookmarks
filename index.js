@@ -165,7 +165,7 @@ const objc = {
     this.setupDialogProperties(dialog, opts.properties);
 
     const handler = $(this.runModal.bind(this, dialog, opts, cb), ['v',['?', 'i']]);
-    dialog('beginSheetModalForWindow', win ? this.getWindow(win) : $.NIL, /* TODO: window! */
+    dialog('beginSheetModalForWindow', win ? this.getWindow(win) : $.NIL,
            'completionHandler', handler);
   },
 
@@ -190,33 +190,35 @@ const objc = {
       if (url('isFileURL')) {
         data.push(url('path'));
         // Create Security-Scoped bookmark from NSURL.
-        if (bookmarkType) {
-          let urlPath = url('absoluteString'),
-              error = $.alloc($.NSError).ref(),
-              isAppBookmark = bookmarkType == 'app',
-              bookmarkData = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
-                             'includingResourceValuesForKeys', $.NIL,
-                             'relativeToURL', isAppBookmark ? $.NIL : urlPath,
-                             'error', error);
-
-          // Error pointer is of type 'object' until allocated, in which case
-          // it will be a function.
-          if (typeof error == 'function') {
-            console.error(error('localizedDescription'));
-            data.bookmarks.errors.push(error('localizedDescription'));
-            continue;
-          }
-
-          // Save to NSUserDefaults.
-          const key = `bookmark::${urlPath}`;
-          defaults('setObject', bookmarkData, 'forKey', $(key));
-          data.bookmarks.keys.push(key);
-        }
+        if (bookmarkType) this.createSecurityBookmark(data, defaults, url);
       }
     }
     // Sync NSUserDefaults if we've accessed it.
     if (bookmarkType) defaults('synchronize');
     return data;
+  },
+
+  createSecurityBookmark: function (data, defaults, url) {
+    let urlPath = url('absoluteString'),
+        error = $.alloc($.NSError).ref(),
+        isAppBookmark = bookmarkType == 'app',
+        bookmarkData = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+                       'includingResourceValuesForKeys', $.NIL,
+                       'relativeToURL', isAppBookmark ? $.NIL : urlPath,
+                       'error', error);
+
+    // Error pointer is of type 'object' until allocated, in which case
+    // it will be a function.
+    if (typeof error == 'function') {
+      console.error(`[bookmark-dialog] Error creating security-scoped bookmark!:\nNativeError: ${error('localizedDescription')}`);
+      data.bookmarks.errors.push(error('localizedDescription'));
+      return;
+    }
+
+    // Save to NSUserDefaults.
+    const key = `bookmark::${urlPath}`;
+    defaults('setObject', bookmarkData, 'forKey', $(key));
+    data.bookmarks.keys.push(key);
   },
 
   setupDialog: function (dialog, opts) {
