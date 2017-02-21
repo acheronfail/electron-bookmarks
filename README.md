@@ -75,9 +75,9 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
 1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument.
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
-Usually electron's `dialog.showOpenDialog` will return an array of filenames. `electron-bookmarks` returns the same array but with an additional arguments `bookmarks`.
+Usually electron's `dialog.showOpenDialog` will return an array of filenames. `electron-bookmarks` returns the same array but with an additional argument `bookmarks`.
 
-`filenames.bookmarks.keys` tells you which bookmarks have just been saved to `NSUserDefaults` as `NSData` objects. These bookmarks are accessible across app restarts and allow your app to access files outside its sandbox _provided you use the APIs correctly_. Use these `keys` in `bookmarks.open(key, ...)`.
+`bookmarks.keys` tells you which bookmarks have just been saved to `NSUserDefaults` as `NSData` objects. These bookmarks are accessible across app restarts and allow your app to access files outside its sandbox _provided you use the APIs correctly_. Use these `keys` in `bookmarks.open(key, ...)`.
 
 
 ### `bookmarks.showSaveDialog()`
@@ -86,7 +86,9 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument.
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
-**Not yet implemented**
+Usually electron's `dialog.showSaveDialog` will return a path. `electron-bookmarks` returns the same path but with an additional argument `bookmark`.
+
+`bookmark.key` is the key that has just been saved to `NSUserDefaults` as an `NSData` object. This bookmark is accessible across app restarts and allow your app to access the file outside its sandbox _provided you use the APIs correctly_. Use this `key` in `bookmarks.open(key, ...)`.
 
 ### `bookmarks.open(key, callback)`
 
@@ -101,7 +103,8 @@ This will return an array of all the keys that you've saved with `electron-bookm
 
 ### `bookmarks.delete(key)`
 
-**Not yet implemented**
+Simply delete a bookmark by its key.  
+Returns `undefined`;
 
 ## Roadmap and known issues
 
