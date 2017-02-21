@@ -6,7 +6,11 @@ let electron = require('electron');
 if (electron.remote) electron = electron.remote;
 const { app, BrowserWindow } = require('electron');
 
-const { checkImports, checkAppInitialized } = require('./util');
+const {
+  moduleKey,
+  checkImports,
+  checkAppInitialized
+} = require('./util');
 
 /**
  * Return an array of all bookmarks saved in NSUserDefaults.
@@ -23,7 +27,7 @@ module.exports.list = function () {
 
   for (let i = 0, c = keys('count'); i < c; i++) {
     const key = keys('objectAtIndex', i)('UTF8String');
-    if (key.startsWith('bookmark::')) {
+    if (key.startsWith(moduleKey)) {
       const type = defaultsDictionary('objectForKey', $(key))('objectForKey', $('type'));
       bookmarks.push({ key: key, type: type });
     }
@@ -125,11 +129,28 @@ module.exports.delete = function (key) {
   defaults('removeObjectForKey', $(key));
 };
 
+/**
+ * Deletes all bookmarks associated with the app.
+ */
+module.exports.deleteAll = function (key) {
+  checkAppInitialized();
+  checkImports();
+
+  const defaults = $.NSUserDefaults('standardUserDefaults'),
+        keys = defaults('dictionaryRepresentation')('allKeys');
+
+  for (let i = 0, c = keys('count'); i < c; i++) {
+    const key = keys('objectAtIndex', i)('UTF8String');
+    if (key.startsWith(moduleKey)) {
+      defaults('removeObjectForKey', $(key));
+    }
+  }
+};
 
 // [from Apple's Docs] We should create a new bookmark using the returned URL
 // and use it in place of any stored copies of the existing bookmark.
 function replaceStaleBookmark(bookmark, store, defaults) {
-  let error = $.alloc($.NSError).ref(),
+  let error = $.alloc($.NSError).ref();
   const type = store('objectForKey', $('type')),
         key = store('objectForKey', $('key')),
         isAppBookmark = type('UTF8String') == 'app';

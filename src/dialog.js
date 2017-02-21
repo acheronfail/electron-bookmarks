@@ -1,7 +1,12 @@
 const path = require('path');
 const $ = require('nodobjc');
 
-const { checkImports, checkArguments, checkAppInitialized } = require('./util');
+const {
+  moduleKey,
+  checkImports,
+  checkArguments,
+  checkAppInitialized
+} = require('./util');
 
 const fileDialogProperties = {
   openFile: 1 << 0,
@@ -289,8 +294,8 @@ const objc = {
     }
 
     // Save to NSUserDefaults as { bookmark: NSData, type: "app" or "document" }.
-    let key = `bookmark::${urlPath}`,
-        bookmark = $.NSMutableDictionary('alloc')('init');
+    const key = `${moduleKey}${urlPath}`,
+          bookmark = $.NSMutableDictionary('alloc')('init');
 
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
     bookmark('setObject', bookmarkData, 'forKey', $('bookmark'));

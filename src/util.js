@@ -6,6 +6,8 @@ if (electron.remote) electron = electron.remote;
 const { app, BrowserWindow } = require('electron');
 
 
+module.exports.moduleKey = `electron-bookmarks::item::`;
+
 /**
  * [checkImports description]
  */
