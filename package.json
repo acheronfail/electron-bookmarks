@@ -1,6 +1,6 @@
 {
   "name": "electron-bookmarks",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
   "main": "index.js",
   "scripts": {
