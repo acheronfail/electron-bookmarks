@@ -31,7 +31,7 @@ module.exports.list = function () {
       bookmarks.push({
         key: key,
         type: defaultsDictionary('objectForKey', $(key))('objectForKey', $('type'))('UTF8String'),
-        path: defaultsDictionary('objectForKey', $(key))('objectForKey', $('path'))('UTF8String');
+        path: defaultsDictionary('objectForKey', $(key))('objectForKey', $('path'))('UTF8String')
       });
     }
   }
