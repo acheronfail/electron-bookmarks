@@ -22,12 +22,16 @@ module.exports.checkImports = function checkImports() {
  * [checkAppInitialized description]
  */
 module.exports.checkAppInitialized = function checkAppInitialized() {
-  if (require('is-electron-renderer')) {
-    throw new Error("electron-bookmarks cannot run in electron's renderer process. Please run it in the main process only.");
+  if (process.platform != 'darwin') {
+    throw new Error('electron-bookmarks can only run on a darwin system.');
   }
 
   if (!process.mas) {
     throw new Error('electron-bookmarks must run within a signed, mas-packaged electron application.');
+  }
+
+  if (require('is-electron-renderer')) {
+    throw new Error("electron-bookmarks cannot run in electron's renderer process. Please run it in the main process only.");
   }
 
   if (!app.isReady()) {

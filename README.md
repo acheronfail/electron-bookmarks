@@ -123,7 +123,6 @@ Returns `undefined`;
 - [x] Create `.open` API
 - [x] Create `.list` API
 - [x] Create `.delete` API
-- [x] Support both `main` and `renderer` processes in electron.
 - [x] Add support for `stale` bookmarks and refresh them.
 - [ ] Write Tests
 - [ ] Test document scoped bookmarks

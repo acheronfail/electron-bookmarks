@@ -29,6 +29,10 @@ module.exports.showOpenDialog = function showOpenDialog(win, opts, cb) {
 
   checkArguments(win, opts, cb);
 
+  if (typeof cb != 'function') {
+    throw new TypeError('Callback must be a function');
+  }
+
   if (opts == null) {
     opts = {
       title: 'Open',
@@ -283,19 +287,22 @@ const objc = {
    */
   createSecurityBookmark: function (defaults, url, bookmarkType) {
     let path = url('path'),
-        error = $.alloc($.NSError).ref(),
-        isAppBookmark = bookmarkType == 'app',
-        bookmarkData = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
-                       'includingResourceValuesForKeys', $.NIL,
-                       'relativeToURL', isAppBookmark ? $.NIL : path,
-                       'error', error);
+        error = $.alloc($.NSError, $.NIL).ref(),
+        isAppBookmark = bookmarkType == 'app';
 
-    // Error pointer is of type 'object' until allocated, in which case
-    // it will be a function.
-    if (typeof error == 'function') {
-      console.error(`[electron-bookmarks] Error creating security-scoped bookmark!:\nNativeError: ${error('localizedDescription')}`);
-      return { error: error('localizedDescription') };
+    let data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+                   'includingResourceValuesForKeys', $.NIL,
+                   'relativeToURL', isAppBookmark ? $.NIL : path,
+                   'error', error);
+
+    // Dereference the error pointer to see if an error has occurred. But this
+    // may result in an error (null pointer ?), hence try/catch.
+    try {
+      const err = error.deref();
+      console.error(`[electron-bookmarks] Error creating security-scoped bookmark:\nNativeError: ${err('localizedDescription')}`);
+      return { error: err('userInfo') };
     }
+    catch (e) { /* it didn't error */ }
 
     // Save to NSUserDefaults as { bookmark: NSData, type: "app" or "document" }.
     const key = `${moduleKey}${path}`,
@@ -303,7 +310,7 @@ const objc = {
 
     bookmark('setObject', path, 'forKey', $('path'));
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
-    bookmark('setObject', bookmarkData, 'forKey', $('bookmark'));
+    bookmark('setObject', data, 'forKey', $('bookmark'));
 
     defaults('setObject', bookmark, 'forKey', $(key));
     return { key: key };
