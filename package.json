@@ -1,15 +1,10 @@
 {
   "name": "electron-bookmarks",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
-  "bugs": {
-    "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
   },
   "keywords": [
     "electron",
@@ -19,6 +14,10 @@
     "bookmarks",
     "permissions"
   ],
+  "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
+  "bugs": {
+    "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/acheronfail/electron-bookmarks.git"
