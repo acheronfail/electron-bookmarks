@@ -1,6 +1,6 @@
 {
   "name": "electron-bookmarks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
   "main": "index.js",
   "scripts": {
@@ -12,8 +12,8 @@
     "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://gitlab.com/acheronfail/electron-bookmarks.git"
+    "type": "git",
+    "url": "https://gitlab.com/acheronfail/electron-bookmarks.git"
   },
   "license": "MIT",
   "dependencies": {
