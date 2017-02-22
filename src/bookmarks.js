@@ -28,8 +28,11 @@ module.exports.list = function () {
   for (let i = 0, c = keys('count'); i < c; i++) {
     const key = keys('objectAtIndex', i)('UTF8String');
     if (key.startsWith(moduleKey)) {
-      const type = defaultsDictionary('objectForKey', $(key))('objectForKey', $('type'));
-      bookmarks.push({ key: key, type: type });
+      bookmarks.push({
+        key: key,
+        type: defaultsDictionary('objectForKey', $(key))('objectForKey', $('type'))('UTF8String'),
+        path: defaultsDictionary('objectForKey', $(key))('objectForKey', $('path'))('UTF8String');
+      });
     }
   }
 
@@ -152,6 +155,7 @@ module.exports.deleteAll = function (key) {
 function replaceStaleBookmark(bookmark, store, defaults) {
   let error = $.alloc($.NSError).ref();
   const type = store('objectForKey', $('type')),
+        path = store('objectForKey', $('path')),
         key = store('objectForKey', $('key')),
         isAppBookmark = type('UTF8String') == 'app';
 
@@ -163,6 +167,7 @@ function replaceStaleBookmark(bookmark, store, defaults) {
 
   // Save bookmark in place of the old one.
   const replacement = $.NSMutableDictionary('alloc')('init');
+  replacement('setObject', path, 'forKey', $('path'));
   replacement('setObject', type, 'forKey', $('type'));
   replacement('setObject', newData, 'forKey', $('bookmark'));
 

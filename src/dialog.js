@@ -278,12 +278,12 @@ const objc = {
    * NSUserDefaults.
    */
   createSecurityBookmark: function (defaults, url, bookmarkType) {
-    let urlPath = url('path'),
+    let path = url('path'),
         error = $.alloc($.NSError).ref(),
         isAppBookmark = bookmarkType == 'app',
         bookmarkData = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
                        'includingResourceValuesForKeys', $.NIL,
-                       'relativeToURL', isAppBookmark ? $.NIL : urlPath,
+                       'relativeToURL', isAppBookmark ? $.NIL : path,
                        'error', error);
 
     // Error pointer is of type 'object' until allocated, in which case
@@ -294,9 +294,10 @@ const objc = {
     }
 
     // Save to NSUserDefaults as { bookmark: NSData, type: "app" or "document" }.
-    const key = `${moduleKey}${urlPath}`,
+    const key = `${moduleKey}${path}`,
           bookmark = $.NSMutableDictionary('alloc')('init');
 
+    bookmark('setObject', $(path), 'forKey', $('path'));
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
     bookmark('setObject', bookmarkData, 'forKey', $('bookmark'));
 
