@@ -11,6 +11,14 @@
   "bugs": {
     "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
   },
+  "keywords": [
+    "electron",
+    "sandbox",
+    "macos",
+    "security-scoped",
+    "bookmarks",
+    "permissions"
+  ],
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/acheronfail/electron-bookmarks.git"

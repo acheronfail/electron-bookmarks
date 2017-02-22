@@ -216,6 +216,10 @@ const objc = {
    */
   runModal: function (dialog, opts, cb, type) {
     return (self, chosen) => {
+      // For some reason if we don't write to stdout here further output is
+      // silenced, so we can't see potential errors, etc.
+      process.stdout.write('');
+
       if (chosen == $.NSFileHandlingPanelCancelButton) {
         cb(null);
       } else if (type == 'openPanel') {
@@ -259,7 +263,7 @@ const objc = {
     for (let i = 0, c = urls('count'); i < c; i++) {
       const url = urls('objectAtIndex', i);
       if (url('isFileURL')) {
-        filenames.push(url('path'));
+        filenames.push(url('path')('UTF8String'));
         // Create Security-Scoped bookmark from NSURL.
         if (bookmarkType) {
           const bookmark = this.createSecurityBookmark(defaults, url, bookmarkType);
@@ -297,7 +301,7 @@ const objc = {
     const key = `${moduleKey}${path}`,
           bookmark = $.NSMutableDictionary('alloc')('init');
 
-    bookmark('setObject', $(path), 'forKey', $('path'));
+    bookmark('setObject', path, 'forKey', $('path'));
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
     bookmark('setObject', bookmarkData, 'forKey', $('bookmark'));
 
