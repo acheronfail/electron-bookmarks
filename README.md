@@ -106,16 +106,24 @@ This will return an array of all the keys that you've saved with `electron-bookm
 Simply delete a bookmark by its key.  
 Returns `undefined`;
 
-## Roadmap and known issues
+### `bookmarks.deleteAll()`
+
+Removes all bookmarks associated with your app.
+Returns `undefined`;
+
+## Things to do
 
 - [x] Create `.showSaveDialog` API
 - [x] Create `.open` API
 - [x] Create `.list` API
 - [x] Create `.delete` API
 - [x] Support both `main` and `renderer` processes in electron.
-- [ ] Add support for `stale` bookmarks and refresh them.
+- [x] Add support for `stale` bookmarks and refresh them.
+- [ ] Write Tests
+- [ ] Test document scoped bookmarks
+- [ ] Sometime in the future, create support for app groups ?
+  - Store bookmarks in a place where they can be accessed by other apps.
 
 
-to be documented: 
+#### To be documented: 
 - bookmarks don't need to be used until next start of app
-- test document scoped bookmarks
