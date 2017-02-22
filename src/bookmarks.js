@@ -100,7 +100,7 @@ module.exports.open = function (key, cb) {
   // Retain the object to ensure it's not garbage-collected.
   bookmark('retain');
 
-  // If the user hasn't called the stop function in 10 seconds, call it now.
+  // If the user hasn't called the close function in 10 seconds, call it now.
   // This *MUST* be called, otherwise the OS makes bad things happen.
   const timeout = setTimeout(() => {
     close();
@@ -116,7 +116,7 @@ module.exports.open = function (key, cb) {
     bookmark('release');
   }
 
-  // Call the user's callback passing a correct path and the stop function.
+  // Call the user's callback passing a correct path and the close function.
   const filepath = bookmark('path')('UTF8String');
   cb(filepath, close);
 };
