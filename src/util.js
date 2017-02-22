@@ -41,7 +41,7 @@ module.exports.checkAppInitialized = function checkAppInitialized() {
  */
 module.exports.checkArguments = function checkArguments(win, opts, cb) {
   // Shift.
-  if (win !== null && win.constructor !== BrowserWindow) {
+  if (win != null && win.constructor != BrowserWindow) {
     [cb, opts, win] = [opts, win, null];
   }
 
@@ -52,7 +52,7 @@ module.exports.checkArguments = function checkArguments(win, opts, cb) {
 
   // Fallback to using very last argument as the callback function.
   const last = arguments[arguments.length - 1];
-  if ((cb == null) && typeof last === 'function') {
+  if ((cb == null) && typeof last == 'function') {
     cb = last;
   }
 }
