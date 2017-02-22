@@ -1,9 +1,12 @@
-# electron-bookmarks
+# Electron Bookmarks!
 
 ## This module enables you to use sandboxed [`Security-Scoped Bookmarks`](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW18) inside of an electron application.
 
 # ATTENTION:
 **I'm not sure if this will be approved by the Mac App Store review process - since it uses `nodobjc` for native Objective-C runtime bindings. I'm in the process of releasing an app on the App Store that uses this module and will update this as soon as I know.**
+
+# IMPORTANT:
+**Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0**
 
 ## Installation
 
