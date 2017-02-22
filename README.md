@@ -8,6 +8,9 @@
 # IMPORTANT:
 **Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0**
 
+# LASTLY:
+**Due to the way Objective-C is bridged to the Node process, you *MUST* use this module in `electron`'s main process. It will not work in the renderer process.**
+
 ## Installation
 
 Super easy.

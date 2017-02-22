@@ -1,10 +1,6 @@
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const $ = require('nodobjc');
-
-// Get electron objects whether in main or renderer process.
-let electron = require('electron');
-if (electron.remote) electron = electron.remote;
-const { app, BrowserWindow } = electron;
 
 const {
   moduleKey,

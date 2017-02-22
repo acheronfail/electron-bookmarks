@@ -1,9 +1,5 @@
 const $ = require('nodobjc');
-
-// Get electron objects whether in main or renderer process.
-let electron = require('electron');
-if (electron.remote) electron = electron.remote;
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow } = require('electron');
 
 
 module.exports.moduleKey = `electron-bookmarks::${app.getName()}::`;
@@ -26,6 +22,10 @@ module.exports.checkImports = function checkImports() {
  * [checkAppInitialized description]
  */
 module.exports.checkAppInitialized = function checkAppInitialized() {
+  if (require('is-electron-renderer')) {
+    throw new Error("electron-bookmarks cannot run in electron's renderer process. Please run it in the main process only.");
+  }
+
   if (!process.mas) {
     throw new Error('electron-bookmarks must run within a signed, mas-packaged electron application.');
   }
