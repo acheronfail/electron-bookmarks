@@ -17,7 +17,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron": "^1.4.15",
     "nodobjc": "^2.1.0"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13"
   }
 }
