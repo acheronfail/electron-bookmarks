@@ -2,9 +2,10 @@
   "name": "electron-bookmarks",
   "version": "0.1.9",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
-  "main": "index.js",
+  "main": "dist/electron-bookmarks.js",
   "scripts": {
-    "build": "rollup -c scripts/rollup.config.js"
+    "build": "rollup -c scripts/rollup.config.js",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "electron",
