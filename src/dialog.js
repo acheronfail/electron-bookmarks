@@ -1,12 +1,12 @@
-const path = require('path');
-const $ = require('nodobjc');
+import path from 'path';
+import $ from 'nodobjc';
 
-const {
+import {
   moduleKey,
   checkImports,
   checkArguments,
   checkAppInitialized
-} = require('./util');
+} from './util';
 
 const fileDialogProperties = {
   openFile: 1 << 0,
@@ -24,7 +24,7 @@ const fileDialogProperties = {
  * @param  {Object}   		 opts - Optional;
  * @param  {Function} 		 cb   - Optional; if not given will be synchronous(?)
  */
-module.exports.showOpenDialog = function showOpenDialog(win, opts, cb) {
+export function showOpenDialog(win, opts, cb) {
   checkAppInitialized();
 
   checkArguments(win, opts, cb);
@@ -109,7 +109,7 @@ module.exports.showOpenDialog = function showOpenDialog(win, opts, cb) {
  * @param  {Object}   		 opts - Optional;
  * @param  {Function} 		 cb   - Optional; if not given will be synchronous(?)
  */
-module.exports.showSaveDialog = function showSaveDialog(win, opts, cb) {
+export function showSaveDialog(win, opts, cb) {
   checkAppInitialized();
 
   checkArguments(win, opts, cb);
@@ -296,7 +296,7 @@ const objc = {
                    'error', error);
 
     // Dereference the error pointer to see if an error has occurred. But this
-    // may result in an error (null pointer ?), hence try/catch.
+    // may result in an error (null pointer exception ?), hence try/catch.
     try {
       const err = error.deref();
       console.error(`[electron-bookmarks] Error creating security-scoped bookmark:\nNativeError: ${err('localizedDescription')}`);

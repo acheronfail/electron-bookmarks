@@ -1,18 +1,18 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const $ = require('nodobjc');
+import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import $ from 'nodobjc';
 
-const {
+import {
   moduleKey,
   checkImports,
   checkAppInitialized
-} = require('./util');
+} from './util';
 
 /**
  * Return an array of all bookmarks saved in NSUserDefaults.
  * @return {array}
  */
-module.exports.list = function () {
+export function list() {
   checkAppInitialized();
   checkImports();
 
@@ -41,7 +41,7 @@ module.exports.list = function () {
  * @param  {Function} cb  [description]
  * @return {[type]}       [description]
  */
-module.exports.open = function (key, cb) {
+export function open(key, cb) {
   checkAppInitialized();
 
   if (!key || typeof key !== 'string') {
@@ -88,6 +88,8 @@ module.exports.open = function (key, cb) {
     // there's a way to "make" a bookmark stale... So we log here in the chance
     // that when it's stale, and `stale != $.YES` we can see what it is.
     console.log('STALE: ', stale);
+    // In any case, attempt to replace it if we reach this point.
+    replaceStaleBookmark(bookmark, bookmarkStore, defaults);
   }
 
   // Begin accessing the bookmarked resource outside of the sandbox.
@@ -120,7 +122,7 @@ module.exports.open = function (key, cb) {
 /**
  * Deletes a bookmark with the passed key if it exists.
  */
-module.exports.delete = function (key) {
+export function deleteOne(key) {
   checkAppInitialized();
   checkImports();
 
@@ -131,7 +133,7 @@ module.exports.delete = function (key) {
 /**
  * Deletes all bookmarks associated with the app.
  */
-module.exports.deleteAll = function (key) {
+export function deleteAll(key) {
   checkAppInitialized();
   checkImports();
 
@@ -145,6 +147,8 @@ module.exports.deleteAll = function (key) {
     }
   }
 };
+
+
 
 // [from Apple's Docs] We should create a new bookmark using the returned URL
 // and use it in place of any stored copies of the existing bookmark.
@@ -160,6 +164,15 @@ function replaceStaleBookmark(bookmark, store, defaults) {
                            'includingResourceValuesForKeys', $.NIL,
                            'relativeToURL', isAppBookmark ? $.NIL : bookmark('path'),
                            'error', error);
+
+  // Dereference the error pointer to see if an error has occurred. But this
+  // may result in an error (null pointer exception ?), hence try/catch.
+  try {
+   const err = error.deref();
+   console.error(`[electron-bookmarks] Error replacing stale bookmark:\nNativeError: ${err('localizedDescription')}`);
+   return { error: err('userInfo') };
+  }
+  catch (e) { /* it didn't error */ }
 
   // Save bookmark in place of the old one.
   const replacement = $.NSMutableDictionary('alloc')('init');

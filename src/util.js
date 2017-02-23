@@ -1,13 +1,13 @@
-const $ = require('nodobjc');
-const { app, BrowserWindow } = require('electron');
+import $ from 'nodobjc';
+import { app, BrowserWindow } from 'electron';
 
 
-module.exports.moduleKey = `electron-bookmarks::${app.getName()}::`;
+export const moduleKey = `electron-bookmarks::${app.getName()}::`;
 
 /**
  * [checkImports description]
  */
-module.exports.checkImports = function checkImports() {
+export function checkImports() {
   if (
     !('NSOpenPanel' in $) ||
     !('NSSavePanel' in $) ||
@@ -21,7 +21,7 @@ module.exports.checkImports = function checkImports() {
 /**
  * [checkAppInitialized description]
  */
-module.exports.checkAppInitialized = function checkAppInitialized() {
+export function checkAppInitialized() {
   if (process.platform != 'darwin') {
     throw new Error('electron-bookmarks can only run on a darwin system.');
   }
@@ -43,7 +43,7 @@ module.exports.checkAppInitialized = function checkAppInitialized() {
 /**
  * [checkArguments description]
  */
-module.exports.checkArguments = function checkArguments(win, opts, cb) {
+export function checkArguments(win, opts, cb) {
   // Shift.
   if (win != null && win.constructor != BrowserWindow) {
     [cb, opts, win] = [opts, win, null];

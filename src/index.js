@@ -1,6 +1,6 @@
-// The module to export.
-module.exports = Object.assign(
-  {},
-  require('./dialog'),
-  require('./bookmarks')
-);
+import * as dialog from './dialog';
+import * as bookmarks from './bookmarks';
+
+const electronBookmarks = Object.assign({}, dialog, bookmarks);
+
+export default electronBookmarks;

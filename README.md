@@ -124,10 +124,12 @@ Returns `undefined`;
 - [x] Create `.list` API
 - [x] Create `.delete` API
 - [x] Add support for `stale` bookmarks and refresh them.
+
+
+- [ ] Build options for distribution
 - [ ] Write Tests
 - [ ] Test document scoped bookmarks
-- [ ] Sometime in the future, create support for app groups ?
-  - Store bookmarks in a place where they can be accessed by other apps.
+- [ ] Attempt to support app groups and shared bookmarks ?
 
 
 #### To be documented: 
