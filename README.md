@@ -66,7 +66,7 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
       
       // ...
       
-      // Once finished, we the bookmark *MUST* be closed!
+      // Once finished, the bookmark *MUST* be closed!
       close(); 
     }
   });

@@ -28,7 +28,8 @@
     }
   },
   "scripts": {
-    "prepublish": "npm run bundle",
+    "prepublishOnly": "npm run bundle",
+    "prepare": "npm run bundle",
     "bundle": "rollup -c scripts/rollup.config.js",
     "test": "build && open test/mas/SignedAndSandboxed.app"
   },

@@ -17,6 +17,9 @@
       }
 
       output {
+        white-space: pre;
+        padding: 25px;
+        font-family: monospace;
         margin: 1em;
         width: 80vw;
         height: 300px;
@@ -32,6 +35,7 @@
   <button id="normal_test_access">Test Write Permissions (no bookmark)</button>
   <button id="bookmarks_test_access">Test Write Permissions (with bookmark)</button>
   <button id="bookmarks_list">List bookmarks</button>
+  <button id="bookmarks_init">Init bookmarks</button>
   <output></output>
 
   <script>require('./renderer.js')</script>

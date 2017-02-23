@@ -1,8 +1,17 @@
 import $ from 'nodobjc';
 import { app, BrowserWindow } from 'electron';
 
+checkAppInitialized();
 
 export const moduleKey = `electron-bookmarks::${app.getName()}::`;
+
+/**
+ * [init description]
+ */
+export function init() {
+  checkAppInitialized();
+  checkImports();
+}
 
 /**
  * [checkImports description]

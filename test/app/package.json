@@ -4,7 +4,7 @@
   "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
   "version": "0.0.1",
   "license": "MIT",
-  "main": "main.js",
+  "main": "main/index.js",
   "dependencies": {
     "electron-bookmarks": "file:///Users/acheronfail/dev/electron-bookmarks"
   }

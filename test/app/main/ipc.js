@@ -1,26 +1,29 @@
 module.exports = { init };
 
-const bookmarks = require('electron-bookmarks'),
-      electron = require('electron');
+const fs = require('fs'),
+      bookmarks = require('electron-bookmarks'),
+      { dialog, app, ipcMain: ipc } = require('electron');
+
+const log = require('./log.js');
 
 function init() {
-  const ipc = electron.ipcMain;
 
-  // NOTE: these are all synchronous events.
+  ipc.on('ipcReady', () => {
+    app.ipcReady = true;
+    app.emit('ipcReady');
+  });
+
+
+  // NOTE: these are all synchronous events, event.returnValue must be set.
 
 
   /**
    * WITHOUT BOOKMARKS
    */
 
-  ipc.on('normal_test_access', (e, ...args) => {
-    try {
-      fs.accessSync(path, fs.constants.W_OK);
-      e.returnValue = 'ACCESS READ: OK';
-    }
-    catch (e) {
-      e.returnValue = 'ACCESS READ: FAIL';
-    }
+  ipc.on('normal_test_access', (e) => {
+    let paths = dialog.showOpenDialog(null, {});
+    e.returnValue = { message: testAccess(paths[0]) };
   });
 
 
@@ -29,9 +32,9 @@ function init() {
    * WITH BOOKMARKS
    */
 
-   ipc.on('bookmarks_test_access', (e, path) => {
+   ipc.on('bookmarks_test_access', (e) => {
      // TODO:
-     e.returnValue = '';
+     e.returnValue = { message: '' };
    });
 
 
@@ -40,7 +43,27 @@ function init() {
     */
 
    ipc.on('bookmarks_list', (e) => {
-     e.returnValue = bookmarks.list();
+     e.returnValue = { message: JSON.stringify(bookmarks.list(), null, 2) };
    });
 
+   ipc.on('bookmarks_init', (e) => {
+     bookmarks.init();
+     e.returnValue = {
+       message: 'Bookmarks initialised!'
+     };
+   });
+
+}
+
+
+// Tests write access.
+function testAccess(path) {
+  try {
+    fs.accessSync(path, fs.constants.W_OK);
+    return 'ACCESS WRITE: OK';
+  }
+  catch (err) {
+    log.error({ message: err.message, stack: err.stack });
+    return 'ACCESS WRITE: FAIL';
+  }
 }
