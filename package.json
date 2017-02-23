@@ -28,7 +28,6 @@
     }
   },
   "scripts": {
-    "prepublishOnly": "npm run bundle",
     "prepare": "npm run bundle",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",
