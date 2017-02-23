@@ -1,20 +1,7 @@
 {
   "name": "electron-bookmarks",
-  "version": "0.1.11",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
-  "main": "dist/electron-bookmarks.js",
-  "scripts": {
-    "build": "rollup -c scripts/rollup.config.js",
-    "prepublish": "npm run build"
-  },
-  "keywords": [
-    "electron",
-    "sandbox",
-    "macos",
-    "security-scoped",
-    "bookmarks",
-    "permissions"
-  ],
+  "version": "0.1.11",
   "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
   "bugs": {
     "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
@@ -23,13 +10,44 @@
     "type": "git",
     "url": "https://gitlab.com/acheronfail/electron-bookmarks.git"
   },
+  "copyright": "© 2017, acheronfail.",
   "license": "MIT",
+  "main": "lib/electron-bookmarks.js",
+  "directories": {
+    "buildResources": "test/build",
+    "output": "test/",
+    "app": "test/app"
+  },
+  "build": {
+    "appId": "com.example.electron-bookmarks",
+    "productName": "SignedAndSandboxed",
+    "electronVersion": "1.4.13",
+    "asar": false,
+    "mac": {
+      "target": "mas"
+    }
+  },
+  "scripts": {
+    "prepublish": "npm run bundle",
+    "bundle": "rollup -c scripts/rollup.config.js",
+    "test": "build && open test/mas/SignedAndSandboxed.app"
+  },
+  "keywords": [
+    "electron",
+    "sandbox",
+    "macos",
+    "security-scoped",
+    "app-scoped",
+    "document-scoped",
+    "bookmarks",
+    "permissions"
+  ],
   "dependencies": {
     "is-electron-renderer": "^2.0.1",
     "nodobjc": "^2.1.0"
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.4.13",
+    "electron-builder": "^8.7.0",
     "rollup": "^0.41.4",
     "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-node-resolve": "^2.0.0"

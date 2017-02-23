@@ -124,9 +124,9 @@ Returns `undefined`;
 - [x] Create `.list` API
 - [x] Create `.delete` API
 - [x] Add support for `stale` bookmarks and refresh them.
+- [x] Build options for distribution
 
 
-- [ ] Build options for distribution
 - [ ] Write Tests
 - [ ] Test document scoped bookmarks
 - [ ] Attempt to support app groups and shared bookmarks ?
@@ -134,3 +134,8 @@ Returns `undefined`;
 
 #### To be documented: 
 - bookmarks don't need to be used until next start of app
+
+
+# License
+
+MIT

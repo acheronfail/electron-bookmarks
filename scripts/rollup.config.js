@@ -9,7 +9,7 @@ export default {
   banner: banner,
   entry: "src/index.js",
   format: "cjs",
-  dest: "dist/electron-bookmarks.js",
+  dest: "lib/electron-bookmarks.js",
   moduleName: "electronBookmarks",
   plugins: [ buble({ namedFunctionExpressions: false }) ],
   external: [ 'nodobjc', 'electron', 'path' ]

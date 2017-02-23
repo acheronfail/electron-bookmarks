@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Electron Bookmarks Test</title>
+    <style>
+      body {
+        background: #f8f8f8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      h1 {
+        font-family: fantasy;
+      }
+
+      output {
+        margin: 1em;
+        width: 80vw;
+        height: 300px;
+        border: 1px solid #e8e8e8;
+        background: #f4f4f4;
+      }
+
+    </style>
+</head>
+<body>
+
+  <h1>Electron Bookmarks in Sandbox</h1>
+  <button id="normal_test_access">Test Write Permissions (no bookmark)</button>
+  <button id="bookmarks_test_access">Test Write Permissions (with bookmark)</button>
+  <button id="bookmarks_list">List bookmarks</button>
+  <output></output>
+
+  <script>require('./renderer.js')</script>
+
+</body>
+</html>
