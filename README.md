@@ -9,7 +9,7 @@
 **Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0**
 
 # LASTLY:
-**Due to the way Objective-C is bridged to the Node process, you *MUST* use this module in `electron`'s main process. It will not work in the renderer process.**
+**Due to the way Objective-C is bridged to the Node process, you *MUST* use this module in `electron`'s main process. It _will not work_ in the renderer process.**
 
 ## Installation
 
@@ -75,6 +75,8 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
 
 ## Usage
 
+Note that initialisation of this module may take some time, since it has to bridge Node to Objective-C and setup all the runtime calls. For this reason `bookmarks.init()` has been provided, so you can initialise it in your app at a convenient time. If you don't call this, `bookmarks` will be initialised the first time you use any of its methods.
+
 ### `bookmarks.showOpenDialog(window, options[, callback])`
 
 **In order to use this you must do two things:** 
@@ -117,6 +119,10 @@ Returns `undefined`;
 Removes all bookmarks associated with your app.
 Returns `undefined`;
 
+### `bookmarks.init()`
+
+Links the runtime Objective-C to Node. May take up to a second to complete.
+
 ## Things to do
 
 - [x] Create `.showSaveDialog` API
@@ -127,7 +133,7 @@ Returns `undefined`;
 - [x] Build options for distribution
 
 
-- [ ] Write Tests
+- [-] Write Tests
 - [ ] Test document scoped bookmarks
 - [ ] Attempt to support app groups and shared bookmarks ?
 

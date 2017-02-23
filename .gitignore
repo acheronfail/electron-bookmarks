@@ -1,9 +1,9 @@
 node_modules/*
 yarn.lock
 
-# Ignore bundle in repo.
-lib/electron-bookmarks.js
-
 # Ignore test files.
 test/app/node_modules/*
 test/mas/*
+
+# Ignore bundle in repo.
+lib/electron-bookmarks.js
