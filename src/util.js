@@ -10,7 +10,7 @@ export const moduleKey = `electron-bookmarks::${app.getName()}::`;
  */
 export function init() {
   checkAppInitialized();
-  checkImports();
+  return checkImports();
 }
 
 /**
@@ -23,7 +23,10 @@ export function checkImports() {
     !('NSUserDefaults') in $
   ) {
     $.import('AppKit');
+    return true;
   }
+
+  return false;
 }
 
 

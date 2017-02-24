@@ -14,7 +14,8 @@ function init() {
   });
 
 
-  // NOTE: these are all synchronous events, event.returnValue must be set.
+  // NOTE: these are all synchronous events, event.returnValue must anything
+  // other than `undefined`.
 
 
   /**
