@@ -1,15 +1,30 @@
 const electron = require('electron');
 const { remote, ipcRenderer } = electron;
 
+// Output div.
 const output = document.querySelector('output');
+
+// Setup test path input.
+const testPath = document.querySelector('#testPath');
+const path = localStorage.getItem('testPath');
+testPath.value = path;
+ipcRenderer.send('updatePath', path);
+testPath.addEventListener('keyup', (e) => {
+  localStorage.setItem('testPath', testPath.value);
+  ipcRenderer.send('updatePath', testPath.value);
+}, false);
 
 // Setup buttons.
 const btns = {
-  bookmark_showOpenDialog: document.querySelector('#bookmark_showOpenDialog'),
-  normal_showOpenDialog: document.querySelector('#normal_showOpenDialog'),
+  bookmark_showOpenDialog_win: document.querySelector('#bookmark_showOpenDialog_win'),
+  bookmark_showOpenDialog:     document.querySelector('#bookmark_showOpenDialog'),
+  normal_showOpenDialog_win: document.querySelector('#normal_showOpenDialog_win'),
+  normal_showOpenDialog:     document.querySelector('#normal_showOpenDialog'),
 
-  bookmark_showSaveDialog: document.querySelector('#bookmark_showSaveDialog'),
-  normal_showSaveDialog: document.querySelector('#normal_showSaveDialog'),
+  bookmark_showSaveDialog_win: document.querySelector('#bookmark_showSaveDialog_win'),
+  bookmark_showSaveDialog:     document.querySelector('#bookmark_showSaveDialog'),
+  normal_showSaveDialog_win: document.querySelector('#normal_showSaveDialog_win'),
+  normal_showSaveDialog:     document.querySelector('#normal_showSaveDialog'),
 
   bookmark_read: document.querySelector('#bookmark_read'),
   normal_read: document.querySelector('#normal_read'),
@@ -19,6 +34,8 @@ const btns = {
 
   bookmarks_list: document.querySelector('#bookmarks_list'),
   bookmarks_init: document.querySelector('#bookmarks_init'),
+  bookmarks_deleteOne: document.querySelector('#bookmarks_deleteOne'),
+  bookmarks_deleteAll: document.querySelector('#bookmarks_deleteAll'),
 };
 
 // Setup listeners.

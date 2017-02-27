@@ -7,7 +7,10 @@
 </head>
 <body>
 
-  <h1>Electron Bookmarks in Sandbox</h1>
+  <h1>Electron Bookmarks MAS Sandbox</h1>
+
+  <label>Test Path</label>
+  <input id="testPath" type="text" />
 
   <table>
     <thead>
@@ -20,33 +23,52 @@
     <tbody>
       <tr>
         <td><code>showOpenDialog</code></td>
-        <td><button id="bookmark_showOpenDialog">test</button></td>
-        <td><button id="normal_showOpenDialog">test</button></td>
+        <td>
+          <button id="bookmark_showOpenDialog_win">test (win)</button>
+          <button id="bookmark_showOpenDialog">test</button>
+        </td>
+        <td>
+          <button id="normal_showOpenDialog_win">test (win)</button>
+          <button id="normal_showOpenDialog">test</button>
+        </td>
       </tr>
       <tr>
         <td><code>showSaveDialog</code></td>
-        <td><button id="bookmark_showSaveDialog">test</button></td>
-        <td><button id="normal_showSaveDialog">test</button></td>
+        <td>
+          <button id="bookmark_showSaveDialog_win">test (win)</button>
+          <button id="bookmark_showSaveDialog">test</button>
+        </td>
+        <td>
+          <button id="normal_showSaveDialog_win">test (win)</button>
+          <button id="normal_showSaveDialog">test</button>
+        </td>
       </tr>
       <tr>
-        <td><code>test read</code></td>
+        <td><code>read permissions</code></td>
         <td><button id="bookmark_read">test</button></td>
         <td><button id="normal_read">test</button></td>
       </tr>
       <tr>
-        <td><code>test write</code></td>
+        <td><code>write permissionse</code></td>
         <td><button id="bookmark_write">test</button></td>
         <td><button id="normal_write">test</button></td>
       </tr>
+
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
       </tr>
       <tr>
-        <td><code>misc</code></td>
-        <td><button id="bookmarks_list">list</button></td>
-        <td><button id="bookmarks_init">init</button></td>
+        <td><code>init</code></td>
+        <td colspan="2"><button id="bookmarks_init">inititalise bookmarks</button></td>
+      </tr>
+      <tr>
+        <td><code>list</code></td>
+        <td colspan="2"><button id="bookmarks_list">list bookmarks</button></td>
+      </tr>
+      <tr>
+        <td><code>delete</code></td>
+        <td><button id="bookmarks_deleteOne">deleteOne</button></td>
+        <td><button id="bookmarks_deleteAll">deleteAll</button></td>
       </tr>
     </tbody>
   </table>

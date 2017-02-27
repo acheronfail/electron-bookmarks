@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import path from 'path';
 import $ from 'nodobjc';
 
@@ -304,10 +305,12 @@ const objc = {
     }
     catch (e) { /* it didn't error */ }
 
-    // Save to NSUserDefaults as { bookmark: NSData, type: "app" or "document" }.
-    const key = `${moduleKey}${path}`,
+    // We hash the path to avoid super long keys.
+    const hash = crypto.createHash('md5').update(path('UTF8String')).digest('hex'),
+          key = `${moduleKey}${hash}`,
           bookmark = $.NSMutableDictionary('alloc')('init');
 
+    // Save to NSUserDefaults as { path, bookmark: NSData, type: "app" or "document" }.
     bookmark('setObject', path, 'forKey', $('path'));
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
     bookmark('setObject', data, 'forKey', $('bookmark'));

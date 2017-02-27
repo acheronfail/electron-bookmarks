@@ -1,4 +1,4 @@
-module.exports = { init, send };
+module.exports = { init, send, win: null };
 
 const { BrowserWindow } = require('electron'),
       url = require('url'),
@@ -8,7 +8,7 @@ const { BrowserWindow } = require('electron'),
 let mainWindow = null;
 
 function init() {
-  mainWindow = new BrowserWindow({
+  mainWindow = module.exports.win = new BrowserWindow({
     show: true,
     width: 1024,
     height: 840
