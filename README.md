@@ -4,6 +4,7 @@
 
 # ATTENTION:
 **I'm not sure if this will be approved by the Mac App Store review process - since it uses `nodobjc` for native Objective-C runtime bindings. I'm in the process of releasing an app on the App Store that uses this module and will update this as soon as I know.**
+[ ](https://github.com/TooTallNate/NodObjC/issues/94)
 
 # IMPORTANT:
 **Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0**
@@ -90,7 +91,10 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 
 ### `bookmarks.showSaveDialog()`
 
-**Same as showOpenDialog, you must:** 
+**Important!**  
+`bookmarks.showSaveDialog()` will **_create the file at the path you select_** in the dialog, since a bookmark cannot be created without a file. Therefore, remember that after using `bookmarks.showSaveDialog()` you will be reading or writing to an already existing file.
+
+**Otherwise the same as showOpenDialog, you must:** 
 1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument. It will default to `"app"`.
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
@@ -109,7 +113,7 @@ Usually electron's `dialog.showSaveDialog` will return a path. `electron-bookmar
 
 This will return an array of all the keys that you've saved with `electron-bookmarks`. These can be used in order to gain access outside your sandbox.
 
-### `bookmarks.delete(key)`
+### `bookmarks.deleteOne(key)`
 
 Simply delete a bookmark by its key.  
 Returns `undefined`;
@@ -125,16 +129,7 @@ Links the runtime Objective-C to Node. May take up to a second to complete.
 
 ## Things to do
 
-- [x] Create `.showSaveDialog` API
-- [x] Create `.open` API
-- [x] Create `.list` API
-- [x] Create `.delete` API
-- [x] Add support for `stale` bookmarks and refresh them.
-- [x] Build options for distribution
-
-
-- [-] Write Tests
-- [ ] Test document scoped bookmarks
+- [ ] Add support for document scoped bookmarks (seems tricky)
 - [ ] Attempt to support app groups and shared bookmarks ?
 
 

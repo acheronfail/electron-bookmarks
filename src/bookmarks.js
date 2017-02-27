@@ -37,26 +37,27 @@ export function list() {
 
 /**
  * [open description]
- * @param  {[type]}   key [description]
- * @param  {Function} cb  [description]
- * @return {[type]}       [description]
+ * @param  {[type]}   key       [description]
+ * @param  {Function} callback  [description]
+ * @return {[type]}             [description]
  */
-export function open(key, cb) {
+export function open(key, callback) {
   checkAppInitialized();
 
   if (!key || typeof key !== 'string') {
-    throw new TypeError(`Key must be of type "string", got "${key}"`);
+    throw new TypeError(`Invalid bookmark value.\nBookmark.key must be of type "string", got "${key}"`);
   }
 
-  if (!cb || typeof cb !== 'function') {
+  if (!callback || typeof callback !== 'function') {
     throw new TypeError(`Callback must be of type "function", got "${key}"`);
   }
 
   checkImports();
 
   const defaults = $.NSUserDefaults('standardUserDefaults'),
-        bookmarkStore = defaults('objectForKey', $(key)),
-        data = bookmarkStore('objectForKey', $('bookmark'));
+        store = defaults('objectForKey', $(key)),
+        data = store('objectForKey', $('bookmark')),
+        type = store('objectForKey', $('type'));
 
   if (!data || typeof data != 'function') {
     throw new TypeError(`Retrieved value from NSUserDefaults is not of type "NSData", got "${data}"`);
@@ -66,37 +67,51 @@ export function open(key, cb) {
   }
 
   // Convert bookmark data to NSURL.
-  let error = $.alloc($.NSError).ref(),
-      stale = $.alloc($.BOOL).ref();
+  let error = $.alloc($.NSError, $.NIL).ref(),
+      stale = $.alloc($.BOOL).ref(),
+      isAppBookmark = type == 'app';
 
-  const bookmark = $.NSURL('URLByResolvingBookmarkData', data,
-										 'options', $.NSURLBookmarkResolutionWithSecurityScope,
-									   'relativeToURL', $.NIL, // TODO: this?
-									   'bookmarkDataIsStale', stale,
-									 	 'error', error);
+  if (!isAppBookmark) {
+    // TODO: document-scoped bookmarks
+  }
 
-  // Handle error.
-  if (typeof error == 'function') {
-    // TODO: handle error correctly.
+  const bookmarkData = $.NSURL('URLByResolvingBookmarkData', data,
+          										 'options', $.NSURLBookmarkResolutionWithSecurityScope,
+          									   'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
+          									   'bookmarkDataIsStale', stale,
+          									 	 'error', error);
+
+  // Dereference the error pointer to see if an error has occurred. But this
+  // may result in an error (null pointer exception ?), hence try/catch.
+  try {
+    const err = error.deref();
+    console.error({ userInfo: err('userInfo'), context: bookmark });
+    throw new Error(`[electron-bookmarks] Error opening bookmark:\nNativeError: ${err('localizedDescription')}`);
+  }
+  catch (err) {
+    if (err.message.startsWith('[electron-bookmarks]')) throw err;
+    // Ignore Dereferencing error.
   }
 
   // Is the bookmark stale?
   if (typeof stale == $.YES) {
-    replaceStaleBookmark(bookmark, bookmarkStore, defaults);
-  } else if (typeof stale != 'object') {
+    replaceStaleBookmark(bookmarkData, store, defaults);
+  }
+  else if (!(stale instanceof Buffer)) {
     // TODO: We haven't been able to test stale bookmarks. I don't know if
     // there's a way to "make" a bookmark stale... So we log here in the chance
     // that when it's stale, and `stale != $.YES` we can see what it is.
+    // That's my justification for being noisy here.
     console.log('STALE: ', stale);
     // In any case, attempt to replace it if we reach this point.
-    replaceStaleBookmark(bookmark, bookmarkStore, defaults);
+    replaceStaleBookmark(bookmarkData, store, defaults);
   }
 
   // Begin accessing the bookmarked resource outside of the sandbox.
-  var didAccess = bookmark('startAccessingSecurityScopedResource');
+  var didAccess = bookmarkData('startAccessingSecurityScopedResource');
 
   // Retain the object to ensure it's not garbage-collected.
-  bookmark('retain');
+  bookmarkData('retain');
 
   // If the user hasn't called the close function in 10 seconds, call it now.
   // This *MUST* be called, otherwise the OS makes bad things happen.
@@ -109,14 +124,14 @@ export function open(key, cb) {
   function close() {
     clearTimeout(timeout);
     // Stop accessing the bookmarked resource.
-    if (didAccess) bookmark('stopAccessingSecurityScopedResource');
+    if (didAccess) bookmarkData('stopAccessingSecurityScopedResource');
     // Release the object so it can be garbage-collected.
-    bookmark('release');
+    bookmarkData('release');
   }
 
   // Call the user's callback passing a correct path and the close function.
-  const filepath = bookmark('path')('UTF8String');
-  cb(filepath, close);
+  const filepath = bookmarkData('path')('UTF8String');
+  callback(filepath, close);
 };
 
 /**
@@ -152,25 +167,30 @@ export function deleteAll(key) {
 
 // [from Apple's Docs] We should create a new bookmark using the returned URL
 // and use it in place of any stored copies of the existing bookmark.
-function replaceStaleBookmark(bookmark, store, defaults) {
-  let error = $.alloc($.NSError).ref();
+function replaceStaleBookmark(bookmarkData, store, defaults) {
+  let error = $.alloc($.NSError, $.NIL).ref();
   const type = store('objectForKey', $('type')),
         path = store('objectForKey', $('path')),
         key = store('objectForKey', $('key')),
         isAppBookmark = type('UTF8String') == 'app';
 
   // Create new bookmark.
-  const newData = bookmark('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
-                           'includingResourceValuesForKeys', $.NIL,
-                           'relativeToURL', isAppBookmark ? $.NIL : bookmark('path'),
-                           'error', error);
+  const newData = bookmarkData('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+                               'includingResourceValuesForKeys', $.NIL,
+                               'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
+                               'error', error);
 
   // Dereference the error pointer to see if an error has occurred. But this
   // may result in an error (null pointer exception ?), hence try/catch.
   try {
-   const err = error.deref();
-   console.error(`[electron-bookmarks] Error replacing stale bookmark:\nNativeError: ${err('localizedDescription')}`);
-   return { error: err('userInfo') };
+    const err = error.deref();
+    console.error(`[electron-bookmarks] Error replacing stale bookmark:\nNativeError: ${err('localizedDescription')}`);
+    console.error({ userInfo: err('userInfo') });
+    console.error('[electron-bookmarks] Removing stale bookmark since it cannot be replaced.');
+
+    // Remove bookmark since it's not working and can't be replaced.
+    defaults('removeObjectForKey', $(key));
+    return;
   }
   catch (e) { /* it didn't error */ }
 

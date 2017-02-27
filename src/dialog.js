@@ -190,7 +190,6 @@ export function showSaveDialog(win, opts, cb) {
  */
 
 const objc = {
-  // TODO: ensure that "['v',['?', 'i']]" is correct!
   showOpenDialog: function (win, opts, cb) {
     checkImports();
 
@@ -199,12 +198,13 @@ const objc = {
     this.setupDialog(dialog, opts);
     this.setupDialogProperties(dialog, opts.properties);
 
+    // TODO: ensure that "['v',['?', 'i']]" is correct!
+    // https://github.com/TooTallNate/NodObjC/issues/5#issuecomment-280985888
     const handler = $(this.runModal(dialog, opts, cb, 'openPanel'), ['v',['?', 'i']]);
     dialog('beginSheetModalForWindow', win ? this.findNativeWindow(win) : $.NIL,
            'completionHandler', handler);
   },
 
-  // TODO: ensure that "['v',['?', 'i']]" is correct!
   showSaveDialog: function (win, opts, cb) {
     checkImports();
 
@@ -213,6 +213,8 @@ const objc = {
     this.setupDialog(dialog, opts);
     dialog('setCanSelectHiddenExtension', $.YES);
 
+    // TODO: ensure that "['v',['?', 'i']]" is correct!
+    // https://github.com/TooTallNate/NodObjC/issues/5#issuecomment-280985888
     const handler = $(this.runModal(dialog, opts, cb, 'savePanel'), ['v',['?', 'i']]);
     dialog('beginSheetModalForWindow', win ? this.findNativeWindow(win) : $.NIL,
            'completionHandler', handler);
@@ -322,17 +324,20 @@ const objc = {
 
     let data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
                    'includingResourceValuesForKeys', $.NIL,
-                   'relativeToURL', isAppBookmark ? $.NIL : path,
+                   'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
                    'error', error);
 
     // Dereference the error pointer to see if an error has occurred. But this
     // may result in an error (null pointer exception ?), hence try/catch.
     try {
       const err = error.deref();
-      console.error(`[electron-bookmarks] Error creating security-scoped bookmark:\nNativeError: ${err('localizedDescription')}`);
-      return { error: err('userInfo') };
+      console.error({ userInfo: err('userInfo'), context: bookmark });
+      throw new Error(`[electron-bookmarks] Error creating security-scoped bookmark:\nNativeError: ${err('localizedDescription')}`);
     }
-    catch (e) { /* it didn't error */ }
+    catch (err) {
+      if (err.message.startsWith('[electron-bookmarks]')) throw err;
+      // Ignore Dereferencing error.
+    }
 
     // We hash the path to avoid super long keys.
     const hash = crypto.createHash('md5').update(path('UTF8String')).digest('hex'),
@@ -343,6 +348,11 @@ const objc = {
     bookmark('setObject', path, 'forKey', $('path'));
     bookmark('setObject', $(bookmarkType), 'forKey', $('type'));
     bookmark('setObject', data, 'forKey', $('bookmark'));
+
+    // If it is a document-scoped bookmark, save the NSURL for later use.
+    if (!isAppBookmark) {
+      defaults('setURL', url, 'forKey', $(`URL:${key}`));
+    }
 
     defaults('setObject', bookmark, 'forKey', $(key));
     return { key: key };
