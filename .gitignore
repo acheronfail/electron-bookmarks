@@ -7,3 +7,5 @@ test/mas/*
 
 # Ignore bundle in repo.
 lib/electron-bookmarks.js
+
+lib/electron-bookmarks\.js\.map
