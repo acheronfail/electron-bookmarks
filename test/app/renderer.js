@@ -17,12 +17,14 @@ testPath.addEventListener('keyup', (e) => {
 // Setup buttons.
 const btns = {
   bookmark_showOpenDialog_win: document.querySelector('#bookmark_showOpenDialog_win'),
-  bookmark_showOpenDialog:     document.querySelector('#bookmark_showOpenDialog'),
+  bookmark_showOpenDialog_app:     document.querySelector('#bookmark_showOpenDialog_app'),
+  bookmark_showOpenDialog_doc:     document.querySelector('#bookmark_showOpenDialog_doc'),
   normal_showOpenDialog_win: document.querySelector('#normal_showOpenDialog_win'),
   normal_showOpenDialog:     document.querySelector('#normal_showOpenDialog'),
 
   bookmark_showSaveDialog_win: document.querySelector('#bookmark_showSaveDialog_win'),
-  bookmark_showSaveDialog:     document.querySelector('#bookmark_showSaveDialog'),
+  bookmark_showSaveDialog_app:     document.querySelector('#bookmark_showSaveDialog_app'),
+  bookmark_showSaveDialog_doc:     document.querySelector('#bookmark_showSaveDialog_doc'),
   normal_showSaveDialog_win: document.querySelector('#normal_showSaveDialog_win'),
   normal_showSaveDialog:     document.querySelector('#normal_showSaveDialog'),
 

@@ -13,11 +13,15 @@ electron.ipcMain.on('updatePath', (e, path) => testPath = path);
 
 
 const actions = {
-  showOpenDialog: function (useBookmark, useWin) {
-    log('showOpenDialog:win:' + useWin + ':bookmark:' + useBookmark);
+  showOpenDialog: function (useBookmark, bookmarkType, useWin) {
+    log(`showOpenDialog::win:${useWin}:bookmark:${useBookmark}:type:${bookmarkType}`);
+
     return new Promise(function(resolve, reject) {
       const dialog = useBookmark ? bookmarks : electron.dialog;
-      dialog.showOpenDialog(useWin ? win : null, {}, (filenames, data) => {
+      const options = { bookmarkType: bookmarkType };
+      const win = useWin ? win : null;
+
+      dialog.showOpenDialog(win, options, (filenames, data) => {
         resolve({
           title: 'showOpenDialog',
           message: (
@@ -28,14 +32,19 @@ const actions = {
           useBookmark: useBookmark
         });
       }); // showOpenDialog
+
     }); // Promise
   },
 
-  showSaveDialog: function (useBookmark, useWin) {
-    log('showSaveDialog:win:' + useWin + ':bookmark:' + useBookmark);
+  showSaveDialog: function (useBookmark, bookmarkType, useWin) {
+    log(`showSaveDialog::win:${useWin}:bookmark:${useBookmark}:type:${bookmarkType}`);
+
     return new Promise(function(resolve, reject) {
       const dialog = useBookmark ? bookmarks : electron.dialog;
-      dialog.showSaveDialog(useWin ? win : null, {}, (filename, data) => {
+      const options = { bookmarkType: bookmarkType };
+      const win = useWin ? win : null;
+
+      dialog.showSaveDialog(win, options, (filename, data) => {
         resolve({
           title: 'showSaveDialog',
           message: (
@@ -46,6 +55,7 @@ const actions = {
           useBookmark: useBookmark
         });
       }); // showSaveDialog
+
     }); // Promise
   },
 
@@ -76,6 +86,9 @@ function access(type, useBookmark) {
           resolve({ title: type, message: res.message, error: res.error, useBookmark });
         });
       }
+      else {
+        throw new Error(`No bookmark found for: ${testPath}`);
+      }
     }
     else {
       const res = testAccess(flags, testPath);
@@ -99,8 +112,8 @@ function testAccess(flags, path) {
 
 
 // Export.
-function test(action, useBookmark, useWin) {
-  actions[action](useBookmark, !!useWin).then((res) => {
+function test(action, useBookmark, bookmarkType, useWindow) {
+  actions[action](useBookmark, bookmarkType, useWindow).then((res) => {
     send('result', res);
   }).catch((err) => {
     send('result', { title: 'Error', error: true, message: err.message });

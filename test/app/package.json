@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "main/index.js",
   "dependencies": {
-    "electron-bookmarks": "file:///Users/acheronfail/dev/electron-bookmarks"
+    "electron-bookmarks": "file:///Users/acheronfail/dev/electron-bookmarks",
+    "source-map-support": "^0.4.11"
   }
 }

@@ -19,17 +19,23 @@ function init() {
    * Tests
    */
 
+  // tests.do(action, useBookmark, bookmarkType, useWindow)
+
   // showOpenDialog
-  ipc.on('bookmark_showOpenDialog_win', (e) => tests.do('showOpenDialog', true, true));
-  ipc.on('bookmark_showOpenDialog', (e) => tests.do('showOpenDialog', false));
-  ipc.on('normal_showOpenDialog_win', (e) => tests.do('showOpenDialog', false, true));
-  ipc.on('normal_showOpenDialog', (e) => tests.do('showOpenDialog', false));
+  ipc.on('bookmark_showOpenDialog_win', (e) => tests.do('showOpenDialog', true, 'app', true));
+  ipc.on('bookmark_showOpenDialog_app', (e) => tests.do('showOpenDialog', true, 'app', false));
+  ipc.on('bookmark_showOpenDialog_doc', (e) => tests.do('showOpenDialog', true, 'doc', false));
+
+  ipc.on('normal_showOpenDialog_win', (e) => tests.do('showOpenDialog', false, null, true));
+  ipc.on('normal_showOpenDialog',     (e) => tests.do('showOpenDialog', false, null, false));
 
   // showSaveDialog
-  ipc.on('bookmark_showSaveDialog_win', (e) => tests.do('showSaveDialog', true, true));
-  ipc.on('bookmark_showSaveDialog', (e) => tests.do('showSaveDialog', false));
-  ipc.on('normal_showSaveDialog_win', (e) => tests.do('showSaveDialog', false, true));
-  ipc.on('normal_showSaveDialog', (e) => tests.do('showSaveDialog', false));
+  ipc.on('bookmark_showSaveDialog_win', (e) => tests.do('showSaveDialog', true, 'app', true));
+  ipc.on('bookmark_showSaveDialog_app', (e) => tests.do('showSaveDialog', true, 'app', false));
+  ipc.on('bookmark_showSaveDialog_doc', (e) => tests.do('showSaveDialog', true, 'doc', false));
+
+  ipc.on('normal_showSaveDialog_win', (e) => tests.do('showSaveDialog', false, null, true));
+  ipc.on('normal_showSaveDialog',     (e) => tests.do('showSaveDialog', false, null, false));
 
   // read
   ipc.on('bookmark_read', (e) => tests.do('read', true));
@@ -47,7 +53,8 @@ function init() {
   ipc.on('bookmarks_list', (e) => {
     send('result', {
       title: 'list',
-      message: JSON.stringify(bookmarks.list(), null, 2)
+      message: JSON.stringify(bookmarks.list(), null, 2),
+      useBookmark: true
     });
   });
 
@@ -57,7 +64,8 @@ function init() {
     bookmarks.init();
     send('result', {
       title: 'init',
-      message: 'Bookmarks initialised!'
+      message: 'Bookmarks initialised!',
+      useBookmark: true
     });
   });
 
@@ -67,14 +75,14 @@ function init() {
     if (!bookmark) return;
     log('deleteOne', bookmark.key);
     bookmarks.deleteOne(bookmark.key);
-    send('result', { title: 'deleteOne', message: 'Deleting first bookmark of bookmarks.list()\n  ' + bookmark.key });
+    send('result', { title: 'deleteOne', message: 'Deleting first bookmark of bookmarks.list()\n  ' + bookmark.key, useBookmark: true });
   });
 
   // Delete all bookmarks.
   ipc.on('bookmarks_deleteAll', (e) => {
     log('deleteAll');
     bookmarks.deleteAll();
-    send('result', { title: 'deleteAll', message: '' });
+    send('result', { title: 'deleteAll', message: 'Done!', useBookmark: true });
   });
 
 }
