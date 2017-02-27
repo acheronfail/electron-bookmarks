@@ -34,13 +34,13 @@ function init() {
   /**
    * read
    */
-  ipc.on('bookmark_read', (e) => tests.do('read', false));
+  ipc.on('bookmark_read', (e) => tests.do('read', true));
   ipc.on('normal_read', (e) => tests.do('read', false));
 
   /**
    * write
    */
-  ipc.on('bookmark_write', (e) => tests.do('write', false));
+  ipc.on('bookmark_write', (e) => tests.do('write', true));
   ipc.on('normal_write', (e) => tests.do('write', false));
 
   /**
@@ -67,7 +67,7 @@ function init() {
     if (!bookmark) return;
     log('deleteOne', bookmark.key);
     bookmarks.deleteOne(bookmark.key);
-    send('result', { title: 'deleteOne', message: 'Deleting first bookmarks of bookmarks.list()\n  ' + bookmark.key });
+    send('result', { title: 'deleteOne', message: 'Deleting first bookmark of bookmarks.list()\n  ' + bookmark.key });
   });
 
   ipc.on('bookmarks_deleteAll', (e) => {

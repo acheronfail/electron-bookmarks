@@ -29,13 +29,6 @@ const actions = {
     }); // Promise
   },
 
-  // TODO: "Scoped bookmarks can only be created for existing files or directories"
-  //      -- you initially have access!
-  //        So create an empty file or folder ? How else will we get the bookmark ?
-  //
-  //        return the NSURL instance!
-  //          -> create the file
-  //          -> create the bookmark
   showSaveDialog: function (useBookmark, useWin) {
     log('showSaveDialog:win:' + useWin + ':bookmark:' + useBookmark);
     return new Promise(function(resolve, reject) {
@@ -66,9 +59,10 @@ function access(type, useBookmark) {
 
   return new Promise((resolve, reject) => {
     if (useBookmark) {
-      const bookmark = bookmarks.list().find((b) => b.path == path);
+      const bookmark = bookmarks.list().find((b) => b.path == testPath);
       if (bookmark) {
         bookmarks.open(bookmark.key, (allowedPath, close) => {
+          log('Using bookmark: ' + bookmark.key);
           const res = testAccess(flags, testPath);
           close();
           resolve({ title: type, message: res.message, error: res.error, useBookmark });
@@ -85,11 +79,11 @@ function access(type, useBookmark) {
 function testAccess(flags, path) {
   try {
     fs.accessSync(path, flags);
-    return { message: 'ACCESS OK' };
+    return { message: 'ACCESS OK: ' + path };
   }
   catch (err) {
     log.error({ message: err.message, stack: err.stack });
-    return { message: 'ACCESS FAIL', error: true };
+    return { message: 'ACCESS FAIL: ' + path, error: true };
   }
 }
 

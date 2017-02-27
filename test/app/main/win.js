@@ -11,7 +11,7 @@ function init() {
   mainWindow = module.exports.win = new BrowserWindow({
     show: true,
     width: 1024,
-    height: 840
+    height: 880
   });
 
   mainWindow.loadURL(url.format({
@@ -25,7 +25,7 @@ function init() {
     setImmediate(function () { process.exit(0); });
   });
 
-  mainWindow.webContents.toggleDevTools({ mode: 'detach' });
+  mainWindow.webContents.toggleDevTools();
 }
 
 
