@@ -129,7 +129,8 @@ Links the runtime Objective-C to Node. May take up to a second to complete.
 
 ## Things to do
 
-- [ ] Add support for document scoped bookmarks (seems tricky)
+- [ ] Add support for document-scoped bookmarks (seems tricky)
+  -  "document-scoped" bookmarks are *scoped* to *each* document, so you'll have to attach the bookmarks to the document's NSURL entry.
 - [ ] Attempt to support app groups and shared bookmarks ?
 
 
