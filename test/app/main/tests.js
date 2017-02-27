@@ -7,8 +7,10 @@ const bookmarks = require('electron-bookmarks');
 const log = require('./log');
 const { send, win } = require('./win');
 
+// This path is sent from the renderer process (text input).
 let testPath = '';
 electron.ipcMain.on('updatePath', (e, path) => testPath = path);
+
 
 const actions = {
   showOpenDialog: function (useBookmark, useWin) {
@@ -61,10 +63,16 @@ function access(type, useBookmark) {
     if (useBookmark) {
       const bookmark = bookmarks.list().find((b) => b.path == testPath);
       if (bookmark) {
+        // Open the bookmark.
         bookmarks.open(bookmark.key, (allowedPath, close) => {
           log('Using bookmark: ' + bookmark.key);
+
+          // Access the file now the bookmark is open.
           const res = testAccess(flags, testPath);
+
+          // Make sure we close it!
           close();
+
           resolve({ title: type, message: res.message, error: res.error, useBookmark });
         });
       }
@@ -76,6 +84,8 @@ function access(type, useBookmark) {
   }); // Promise
 }
 
+
+// Tests access to the given path.
 function testAccess(flags, path) {
   try {
     fs.accessSync(path, flags);
