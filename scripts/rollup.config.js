@@ -12,5 +12,5 @@ export default {
   dest: "lib/electron-bookmarks.js",
   moduleName: "electronBookmarks",
   plugins: [ buble({ namedFunctionExpressions: false }) ],
-  external: [ 'nodobjc', 'electron', 'path' ]
+  external: [ 'nodobjc', 'electron', 'path', 'crypto' ]
 };

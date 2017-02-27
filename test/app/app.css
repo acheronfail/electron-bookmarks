@@ -1,5 +1,6 @@
 body {
   background: #fcfcfc;
+  text-align: center;
 }
 
 h1 {
@@ -8,13 +9,14 @@ h1 {
 }
 
 button {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 output {
+  text-align: left;
   display: block;
-  padding: 25px;
+  padding: 5px;
   font-family: monospace;
   margin: 1em auto;
   width: 80vw;
@@ -32,6 +34,20 @@ code {
   border-radius: 3px;
   padding: 3px;
 }
+
+input {
+  display: block;
+  width: 80vw;
+  margin: 1em auto;
+  font-family: monospace;
+  padding: 3px;
+  box-shadow: 0 0 5px #888;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  outline: none;
+  background: #f8f8f8;
+}
+input:focus { background: #fff; }
 
 /**
  * Tables
@@ -52,6 +68,7 @@ table tr:nth-child(2n) {
   background-color: #f8f8f8;
 }
 table tr th {
+  background-color: #f8f8f8;
   font-weight: bold;
   border: 1px solid #cccccc;
   text-align: center;
