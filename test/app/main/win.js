@@ -8,7 +8,12 @@ const { BrowserWindow } = require('electron'),
 let mainWindow = null;
 
 function init() {
-  mainWindow = new BrowserWindow({ show: true });
+  mainWindow = new BrowserWindow({
+    show: true,
+    width: 1024,
+    height: 840
+  });
+
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, '..', 'app.html'),
     protocol: 'file:',

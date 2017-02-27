@@ -3,39 +3,54 @@
 <head>
     <meta charset="utf-8">
     <title>Electron Bookmarks Test</title>
-    <style>
-      body {
-        background: #f8f8f8;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      h1 {
-        font-family: fantasy;
-      }
-
-      output {
-        white-space: pre;
-        padding: 25px;
-        font-family: monospace;
-        margin: 1em;
-        width: 80vw;
-        height: 300px;
-        border: 1px solid #e8e8e8;
-        background: #f4f4f4;
-      }
-
-    </style>
+    <link rel="stylesheet" href="./app.css" />
 </head>
 <body>
 
   <h1>Electron Bookmarks in Sandbox</h1>
-  <button id="normal_test_access">Test Write Permissions (no bookmark)</button>
-  <button id="bookmarks_test_access">Test Write Permissions (with bookmark)</button>
-  <button id="bookmarks_list">List bookmarks</button>
-  <button id="bookmarks_init">Init bookmarks</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Actions</th>
+        <th style="color: green;">With Bookmarks</th>
+        <th style="color: blue;">Without Bookmarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>showOpenDialog</code></td>
+        <td><button id="bookmark_showOpenDialog">test</button></td>
+        <td><button id="normal_showOpenDialog">test</button></td>
+      </tr>
+      <tr>
+        <td><code>showSaveDialog</code></td>
+        <td><button id="bookmark_showSaveDialog">test</button></td>
+        <td><button id="normal_showSaveDialog">test</button></td>
+      </tr>
+      <tr>
+        <td><code>test read</code></td>
+        <td><button id="bookmark_read">test</button></td>
+        <td><button id="normal_read">test</button></td>
+      </tr>
+      <tr>
+        <td><code>test write</code></td>
+        <td><button id="bookmark_write">test</button></td>
+        <td><button id="normal_write">test</button></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><code>misc</code></td>
+        <td><button id="bookmarks_list">list</button></td>
+        <td><button id="bookmarks_init">init</button></td>
+      </tr>
+    </tbody>
+  </table>
+
   <output></output>
 
   <script>require('./renderer.js')</script>

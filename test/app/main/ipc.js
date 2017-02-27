@@ -1,10 +1,12 @@
 module.exports = { init };
 
-const fs = require('fs'),
-      bookmarks = require('electron-bookmarks'),
+const bookmarks = require('electron-bookmarks'),
       { dialog, app, ipcMain: ipc } = require('electron');
 
-const log = require('./log.js');
+const log = require('./log.js'),
+      tests = require('./tests'),
+      { send } = require('./win');
+
 
 function init() {
 
@@ -13,58 +15,47 @@ function init() {
     app.emit('ipcReady');
   });
 
-
-  // NOTE: these are all synchronous events, event.returnValue must anything
-  // other than `undefined`.
-
+  /**
+   * showOpenDialog
+   */
+  ipc.on('bookmark_showOpenDialog', (e) => tests.do('showOpenDialog', true));
+  ipc.on('normal_showOpenDialog', (e) => tests.do('showOpenDialog', false));
 
   /**
-   * WITHOUT BOOKMARKS
+   * showSaveDialog
+   */
+  ipc.on('bookmark_showSaveDialog', (e) => tests.do('showSaveDialog', true));
+  ipc.on('normal_showSaveDialog', (e) => tests.do('showSaveDialog', false));
+
+  /**
+   * read
+   */
+  ipc.on('bookmark_read', (e) => tests.do('read', true));
+  ipc.on('normal_read', (e) => tests.do('read', false));
+
+  /**
+   * write
+   */
+  ipc.on('bookmark_write', (e) => tests.do('write', true));
+  ipc.on('normal_write', (e) => tests.do('write', false));
+
+  /**
+   * misc
    */
 
-  ipc.on('normal_test_access', (e) => {
-    let paths = dialog.showOpenDialog(null, {});
-    e.returnValue = { message: testAccess(paths[0]) };
+  ipc.on('bookmarks_list', (e) => {
+    send('result', {
+      title: 'list',
+      message: JSON.stringify(bookmarks.list(), null, 2)
+    });
   });
 
+  ipc.on('bookmarks_init', (e) => {
+    bookmarks.init();
+    send('result', {
+      title: 'init',
+      message: 'Bookmarks initialised!'
+    });
+  });
 
-
-  /**
-   * WITH BOOKMARKS
-   */
-
-   ipc.on('bookmarks_test_access', (e) => {
-     // TODO:
-     e.returnValue = { message: '' };
-   });
-
-
-   /**
-    * OTHER
-    */
-
-   ipc.on('bookmarks_list', (e) => {
-     e.returnValue = { message: JSON.stringify(bookmarks.list(), null, 2) };
-   });
-
-   ipc.on('bookmarks_init', (e) => {
-     bookmarks.init();
-     e.returnValue = {
-       message: 'Bookmarks initialised!'
-     };
-   });
-
-}
-
-
-// Tests write access.
-function testAccess(path) {
-  try {
-    fs.accessSync(path, fs.constants.W_OK);
-    return 'ACCESS WRITE: OK';
-  }
-  catch (err) {
-    log.error({ message: err.message, stack: err.stack });
-    return 'ACCESS WRITE: FAIL';
-  }
 }

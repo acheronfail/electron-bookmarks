@@ -33,7 +33,9 @@
     "minor": "npm version minor && npm publish",
     "major": "npm version major && npm publish",
     "bundle": "rollup -c scripts/rollup.config.js",
-    "test": "build && open test/mas/SignedAndSandboxed.app"
+    "open": "./test/mas/SignedAndSandboxed.app/Contents/MacOS/SignedAndSandboxed",
+    "test": "build && npm run open",
+    "inject": "./scripts/inject.sh && npm run open"
   },
   "keywords": [
     "electron",
