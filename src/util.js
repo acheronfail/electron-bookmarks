@@ -1,3 +1,4 @@
+import fs from 'fs';
 import $ from 'nodobjc';
 import { app, BrowserWindow } from 'electron';
 
@@ -49,6 +50,20 @@ export function checkAppInitialized() {
   if (!app.isReady()) {
     throw new Error('electron-bookmarks can only be used after app is ready.');
   }
+}
+
+/**
+ * Checks if a file or directory exists.
+ */
+export function exists(path, callback) {
+  fs.stat(path, (err, s) => {
+    if (err && err.code == 'ENOENT') {
+      callback(null, false);
+    }
+    else {
+      callback(err, err ? null : s.isFile() || s.isDirectory());
+    }
+  });
 }
 
 

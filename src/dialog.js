@@ -1,8 +1,10 @@
 import crypto from 'crypto';
 import path from 'path';
 import $ from 'nodobjc';
+import fs from 'fs';
 
 import {
+  exists,
   moduleKey,
   checkImports,
   checkArguments,
@@ -221,8 +223,8 @@ const objc = {
    */
   runModal: function (dialog, opts, cb, type) {
     return (self, chosen) => {
-      // For some reason if we don't write to stdout here further output is
-      // silenced, so we can't see potential errors, etc.
+      // For some strange reason if we don't write to stdout here further output
+      // is silenced, so we can't see potential errors, etc.
       process.stdout.write('');
 
       if (chosen == $.NSFileHandlingPanelCancelButton) {
@@ -238,20 +240,47 @@ const objc = {
   /**
    * Reads the url from an NSSavePanel.
    */
-  readDialogURL: function (dialog, cb, bookmarkType) {
+  readDialogURL: function (dialog, callback, bookmarkType) {
     const url = dialog('URL');
     const path = url('path')('UTF8String');
 
-    if (bookmarkType) {
+    if (!bookmarkType) return callback(path);
+
+    // Retain url since we'll make async calls here.
+    url('retain');
+
+    // Check if the chosen path exists.
+    exists(path, (err, yes) => {
+      if (err) error(err);
+
+      // If the path exists we immediately create a bookmark.
+      if (yes) createBookmark.bind(this)();
+
+      // If the path doesn't exist, we can't make a bookmark for it. So we
+      // create an empty file, and then create a bookmark for it.
+      else {
+        fs.writeFile(path, '', (err) => {
+          if (err) error(err);
+          createBookmark.bind(this)();
+        });
+      }
+    });
+
+    function error(err) {
+      url('release'); // Don't want any memory leaks.
+      throw err;
+    }
+
+    function createBookmark() {
       const defaults = $.NSUserDefaults('standardUserDefaults'),
             bookmark = this.createSecurityBookmark(defaults, url, bookmarkType);
 
       if (bookmark.key) defaults('synchronize');
-      console.log(bookmark);
-      return cb(path, bookmark);
-    }
+      callback(path, bookmark);
 
-    cb(path);
+      // Release url to be garbage-collected.
+      url('release');
+    }
   },
 
   /**
