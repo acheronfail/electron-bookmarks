@@ -2,8 +2,9 @@
 
 ## This module enables you to use sandboxed [`Security-Scoped Bookmarks`](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW18) inside of an electron application.
 
-# ATTENTION:
-**I'm not sure if this will be approved by the Mac App Store review process - since it uses `nodobjc` for native Objective-C runtime bindings. I'm in the process of releasing an app on the App Store that uses this module and will update this as soon as I know.**
+# NEED TO KNOW
+* This module only supports `app-scoped` bookmarks at this time. (`document-scoped` bookmarks are planned, but their implementation may be more difficult).
+* **I'm not sure if this will be approved by the Mac App Store review process - since it uses `nodobjc` for native Objective-C runtime bindings. I'm in the process of releasing an app on the App Store that uses this module and will update this as soon as I know.**
 [ ](https://github.com/TooTallNate/NodObjC/issues/94)
 
 # IMPORTANT:
@@ -81,7 +82,7 @@ Note that initialisation of this module may take some time, since it has to brid
 ### `bookmarks.showOpenDialog(window, options[, callback])`
 
 **In order to use this you must do two things:** 
-1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument. It will default to `"app"`.
+1. Pass `bookmarkType: 'app'`. Default is `"app"` (the value `"document"` will - hopefully - be supported in the future).
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
 Usually electron's `dialog.showOpenDialog` will return an array of filenames. `electron-bookmarks` returns the same array but with an additional argument `bookmarks`.
@@ -95,7 +96,7 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 `bookmarks.showSaveDialog()` will **_create the file at the path you select_** in the dialog, since a bookmark cannot be created without a file. Therefore, remember that after using `bookmarks.showSaveDialog()` you will be reading or writing to an already existing file.
 
 **Otherwise the same as showOpenDialog, you must:** 
-1. Pass `bookmarkType: 'app'` or `bookmarkType: 'document'` into the `options` argument. It will default to `"app"`.
+1. Pass `bookmarkType: 'app'`. Default is `"app"` (the value `"document"` will - hopefully - be supported in the future).
 2. Use `showOpenDialog`'s asynchronous API. There is currently no support for the synchronous API (nor will there be).
 
 Usually electron's `dialog.showSaveDialog` will return a path. `electron-bookmarks` returns the same path but with an additional argument `bookmark`.
@@ -130,7 +131,7 @@ Links the runtime Objective-C to Node. May take up to a second to complete.
 ## Things to do
 
 - [ ] Add support for document-scoped bookmarks (seems tricky)
-  -  "document-scoped" bookmarks are *scoped* to *each* document, so you'll have to attach the bookmarks to the document's NSURL entry.
+  -  Note that "document-scoped" bookmarks are *scoped* to *each* document, so we'll have to attach the bookmarks to the each document's NSURL entry. I'm not currently sure of a good way to get an NSURL entry nicely.
 - [ ] Attempt to support app groups and shared bookmarks ?
 
 
