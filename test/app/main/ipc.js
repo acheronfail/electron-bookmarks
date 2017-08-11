@@ -24,7 +24,7 @@ function init() {
   // showOpenDialog
   ipc.on('bookmark_showOpenDialog_win', (e) => tests.do('showOpenDialog', true, 'app', true));
   ipc.on('bookmark_showOpenDialog_app', (e) => tests.do('showOpenDialog', true, 'app', false));
-  ipc.on('bookmark_showOpenDialog_doc', (e) => tests.do('showOpenDialog', true, 'doc', false));
+  ipc.on('bookmark_showOpenDialog_doc', (e) => tests.do('showOpenDialog', true, 'document', false));
 
   ipc.on('normal_showOpenDialog_win', (e) => tests.do('showOpenDialog', false, null, true));
   ipc.on('normal_showOpenDialog',     (e) => tests.do('showOpenDialog', false, null, false));
@@ -32,7 +32,7 @@ function init() {
   // showSaveDialog
   ipc.on('bookmark_showSaveDialog_win', (e) => tests.do('showSaveDialog', true, 'app', true));
   ipc.on('bookmark_showSaveDialog_app', (e) => tests.do('showSaveDialog', true, 'app', false));
-  ipc.on('bookmark_showSaveDialog_doc', (e) => tests.do('showSaveDialog', true, 'doc', false));
+  ipc.on('bookmark_showSaveDialog_doc', (e) => tests.do('showSaveDialog', true, 'document', false));
 
   ipc.on('normal_showSaveDialog_win', (e) => tests.do('showSaveDialog', false, null, true));
   ipc.on('normal_showSaveDialog',     (e) => tests.do('showSaveDialog', false, null, false));
