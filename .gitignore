@@ -9,3 +9,5 @@ test/mas/*
 lib/electron-bookmarks.js
 
 lib/electron-bookmarks\.js\.map
+
+.DS_Store
