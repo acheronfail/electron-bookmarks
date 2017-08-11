@@ -1,7 +1,7 @@
 {
   "name": "electron-bookmarks",
   "description": "Access to macOS Security-Scoped bookmarks in an electron application",
-  "version": "0.1.21",
+  "version": "0.2.0",
   "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
   "bugs": {
     "url": "https://gitlab.com/acheronfail/electron-bookmarks/issues"
