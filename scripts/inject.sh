@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+set -e
+
 # If we haven't made any changes to native modules, we can just copy the js
 # into the signed app bundle and run it.
 APP="test/mas/SignedAndSandboxed.app/Contents/Resources/app"

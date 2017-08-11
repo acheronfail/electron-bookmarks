@@ -57,7 +57,8 @@ export function open(key, callback) {
   const defaults = $.NSUserDefaults('standardUserDefaults'),
         store = defaults('objectForKey', $(key)),
         data = store('objectForKey', $('bookmark')),
-        type = store('objectForKey', $('type'));
+        type = store('objectForKey', $('type')),
+        path = store('objectForKey', $('path'));
 
   if (!data || typeof data != 'function') {
     throw new TypeError(`Retrieved value from NSUserDefaults is not of type "NSData", got "${data}"`);
@@ -71,15 +72,12 @@ export function open(key, callback) {
       stale = $.alloc($.BOOL).ref(),
       isAppBookmark = type == 'app';
 
-  if (!isAppBookmark) {
-    // TODO: document-scoped bookmarks
-  }
-
+  const relativeToURL = isAppBookmark ? $.NIL : $.NSURL('fileURLWithPath', path, 'isDirectory', $.NO);
   const bookmarkData = $.NSURL('URLByResolvingBookmarkData', data,
-          										 'options', $.NSURLBookmarkResolutionWithSecurityScope,
-          									   'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
-          									   'bookmarkDataIsStale', stale,
-          									 	 'error', error);
+                               'options', $.NSURLBookmarkResolutionWithSecurityScope,
+                               'relativeToURL', relativeToURL,
+                               'bookmarkDataIsStale', stale,
+                               'error', error);
 
   // Dereference the error pointer to see if an error has occurred. But this
   // may result in an error (null pointer exception ?), hence try/catch.
@@ -175,9 +173,10 @@ function replaceStaleBookmark(bookmarkData, store, defaults) {
         isAppBookmark = type('UTF8String') == 'app';
 
   // Create new bookmark.
+  const relativeToURL = isAppBookmark ? $.NIL : $.NSURL('fileURLWithPath', path, 'isDirectory', $.NO);
   const newData = bookmarkData('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
                                'includingResourceValuesForKeys', $.NIL,
-                               'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
+                               'relativeToURL', relativeToURL,
                                'error', error);
 
   // Dereference the error pointer to see if an error has occurred. But this

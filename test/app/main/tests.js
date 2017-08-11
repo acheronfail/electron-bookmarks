@@ -19,9 +19,8 @@ const actions = {
     return new Promise(function(resolve, reject) {
       const dialog = useBookmark ? bookmarks : electron.dialog;
       const options = { bookmarkType: bookmarkType };
-      const win = useWin ? win : null;
 
-      dialog.showOpenDialog(win, options, (filenames, data) => {
+      dialog.showOpenDialog(useWin ? win : null, options, (filenames, data) => {
         resolve({
           title: 'showOpenDialog',
           message: (
@@ -42,9 +41,8 @@ const actions = {
     return new Promise(function(resolve, reject) {
       const dialog = useBookmark ? bookmarks : electron.dialog;
       const options = { bookmarkType: bookmarkType };
-      const win = useWin ? win : null;
 
-      dialog.showSaveDialog(win, options, (filename, data) => {
+      dialog.showSaveDialog(useWin ? win : null, options, (filename, data) => {
         resolve({
           title: 'showSaveDialog',
           message: (

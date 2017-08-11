@@ -1,12 +1,12 @@
 {
   "name": "electron-bookmarks-sandbox-test",
   "description": "Signed and sandboxed application for testing electron-bookmarks",
-  "author": "acheronfail <acheronfail@gmail.com> (www.axension.io)",
+  "author": "acheronfail <acheronfail@gmail.com>",
   "version": "0.0.1",
   "license": "MIT",
   "main": "main/index.js",
   "dependencies": {
-    "electron-bookmarks": "file:///Users/acheronfail/dev/electron-bookmarks",
+    "electron-bookmarks": "../../../electron-bookmarks",
     "source-map-support": "^0.4.11"
   }
 }

@@ -48,7 +48,7 @@ export function showOpenDialog(win, opts, cb) {
 
   if (bookmarkType == null) {
     bookmarkType = 'app';
-  } else if (typeof bookmarkType !== 'string') {
+  } else if (typeof bookmarkType !== 'string' || (bookmarkType != 'app' || bookmarkType != 'document')) {
     throw new TypeError('Bookmark Type must be a either "app" or "document"');
   }
 
@@ -128,7 +128,7 @@ export function showSaveDialog(win, opts, cb) {
 
   if (bookmarkType == null) {
     bookmarkType = 'app';
-  } else if (typeof bookmarkType !== 'string') {
+  } else if (typeof bookmarkType !== 'string' || (bookmarkType != 'app' || bookmarkType != 'document')) {
     throw new TypeError('Bookmark Type must be a either "app" or "document"');
   }
 
@@ -322,13 +322,15 @@ const objc = {
         error = $.alloc($.NSError, $.NIL).ref(),
         isAppBookmark = bookmarkType == 'app';
 
-    let data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+    // https://developer.apple.com/documentation/foundation/nsurl/1417795-bookmarkdatawithoptions?language=objc
+    const relativeToURL = isAppBookmark ? $.NIL : $.NSURL('fileURLWithPath', path, 'isDirectory', $.NO);
+    const data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
                    'includingResourceValuesForKeys', $.NIL,
-                   'relativeToURL', isAppBookmark ? $.NIL : $.NIL, // TODO: document-scoped bookmarks
+                   'relativeToURL', relativeToURL,
                    'error', error);
 
     // Dereference the error pointer to see if an error has occurred. But this
-    // may result in an error (null pointer exception ?), hence try/catch.
+    // may result in an error (null pointer ?), hence try/catch.
     try {
       const err = error.deref();
       console.error({ userInfo: err('userInfo'), context: bookmark });
