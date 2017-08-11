@@ -48,7 +48,7 @@ export function showOpenDialog(win, opts, cb) {
 
   if (bookmarkType == null) {
     bookmarkType = 'app';
-  } else if (typeof bookmarkType !== 'string' || (bookmarkType == 'app' || bookmarkType == 'document')) {
+  } else if (typeof bookmarkType !== 'string' || (bookmarkType != 'app' && bookmarkType != 'document')) {
     throw new TypeError(`Bookmark Type must be a either "app" or "document". Got "${bookmarkType}".`);
   }
 
@@ -128,7 +128,7 @@ export function showSaveDialog(win, opts, cb) {
 
   if (bookmarkType == null) {
     bookmarkType = 'app';
-  } else if (typeof bookmarkType !== 'string' || (bookmarkType == 'app' || bookmarkType == 'document')) {
+  } else if (typeof bookmarkType !== 'string' || (bookmarkType != 'app' && bookmarkType != 'document')) {
     throw new TypeError(`Bookmark Type must be a either "app" or "document". Got "${bookmarkType}".`);
   }
 
