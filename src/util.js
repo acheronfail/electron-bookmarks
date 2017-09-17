@@ -24,7 +24,18 @@ export function checkImports() {
     !('NSUserDefaults') in $
   ) {
     $.import('AppKit');
+    $.import('Foundation');
+
     return true;
+  }
+
+  // NOTE: These can be `undefined` at peculiar times, so we just put the
+  // raw values in if they're not already there.
+  if (!'NSURLBookmarkCreationWithSecurityScope' in $) {
+    $.NSURLBookmarkCreationWithSecurityScope = 2048;
+  }
+  if (!'NSURLBookmarkResolutionWithSecurityScope' in $) {
+    $.NSURLBookmarkResolutionWithSecurityScope = 1024;
   }
 
   return false;

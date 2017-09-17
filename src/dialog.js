@@ -215,7 +215,7 @@ const objc = {
 
     // TODO: ensure that "['v',['?', 'i']]" is correct!
     // https://github.com/TooTallNate/NodObjC/issues/5#issuecomment-280985888
-    const handler = $(this.runModal(dialog, opts, cb, 'savePanel'), ['v',['?', 'i']]);
+    const handler = $(this.runModal(dialog, opts, cb, 'savePanel'), ['v',['i']]);
     dialog('beginSheetModalForWindow', win ? this.findNativeWindow(win) : $.NIL,
            'completionHandler', handler);
   },
@@ -251,38 +251,41 @@ const objc = {
     // Retain url since we'll make async calls here.
     url('retain');
 
+    // This will create the bookmark, and release the url.
+    const createBookmark = () => {
+      const defaults = $.NSUserDefaults('standardUserDefaults'),
+            bookmark = this.createSecurityBookmark(defaults, url, bookmarkType);
+
+      if (bookmark.key) defaults('synchronize');
+
+      // Release url to be garbage-collected.
+      url('release');
+
+      callback(path, bookmark);
+    }
+
     // Check if the chosen path exists.
     exists(path, (err, yes) => {
-      if (err) error(err);
+      if (err) {
+        url('release'); // Don't want any memory leaks.
+        throw err;
+      }
 
       // If the path exists we immediately create a bookmark.
-      if (yes) createBookmark.bind(this)();
+      if (yes) createBookmark();
 
       // If the path doesn't exist, we can't make a bookmark for it. So we
       // create an empty file, and then create a bookmark for it.
       else {
         fs.writeFile(path, '', (err) => {
-          if (err) error(err);
-          createBookmark.bind(this)();
+          if (err) {
+            url('release'); // Don't want any memory leaks.
+            throw err;
+          }
+          createBookmark();
         });
       }
     });
-
-    function error(err) {
-      url('release'); // Don't want any memory leaks.
-      throw err;
-    }
-
-    function createBookmark() {
-      const defaults = $.NSUserDefaults('standardUserDefaults'),
-            bookmark = this.createSecurityBookmark(defaults, url, bookmarkType);
-
-      if (bookmark.key) defaults('synchronize');
-      callback(path, bookmark);
-
-      // Release url to be garbage-collected.
-      url('release');
-    }
   },
 
   /**
@@ -322,12 +325,20 @@ const objc = {
         error = $.alloc($.NSError, $.NIL).ref(),
         isAppBookmark = bookmarkType == 'app';
 
+    // TODO: document-scoped
+    // TODO: document-scoped bookmarks must be placed in the file package itself! not core-data...
+
     // https://developer.apple.com/documentation/foundation/nsurl/1417795-bookmarkdatawithoptions?language=objc
     const relativeToURL = isAppBookmark ? $.NIL : $.NSURL('fileURLWithPath', path, 'isDirectory', $.NO);
-    const data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
-                   'includingResourceValuesForKeys', $.NIL,
-                   'relativeToURL', relativeToURL,
-                   'error', error);
+    let data;
+    try {
+      data = url('bookmarkDataWithOptions', $.NSURLBookmarkCreationWithSecurityScope,
+                 'includingResourceValuesForKeys', $.NIL,
+                 'relativeToURL', relativeToURL,
+                 'error', error);
+    } catch (err) {
+      throw err;
+    }
 
     // Dereference the error pointer to see if an error has occurred. But this
     // may result in an error (null pointer ?), hence try/catch.

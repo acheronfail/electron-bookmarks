@@ -79,6 +79,11 @@ export function open(key, callback) {
                                'bookmarkDataIsStale', stale,
                                'error', error);
 
+  // TODO: the (document-scoped) bookmark data must be placed and retrieved from the NSURL entry of the file itself!
+  // console.log(relativeToURL, path);
+  // console.log(bookmarkData);
+  // console.log(error.deref());
+
   // Dereference the error pointer to see if an error has occurred. But this
   // may result in an error (null pointer exception ?), hence try/catch.
   try {
@@ -92,7 +97,7 @@ export function open(key, callback) {
   }
 
   // Is the bookmark stale?
-  if (typeof stale == $.YES) {
+  if (stale == $.YES) {
     replaceStaleBookmark(bookmarkData, store, defaults);
   }
   else if (!(stale instanceof Buffer)) {
@@ -115,7 +120,7 @@ export function open(key, callback) {
   // This *MUST* be called, otherwise the OS makes bad things happen.
   const timeout = setTimeout(() => {
     close();
-    throw new Error('Bookmark has not been closed! You *MUST* do this otherwise your app will leak kernel resources.\nForce closing now.');
+    throw new Error(`Bookmark has not been closed! You *MUST* do this otherwise your app will leak kernel resources.\nForce closing "${key}" now.`);
   }, 10e3);
 
   // The resource *MUST* be closed, and the object released.

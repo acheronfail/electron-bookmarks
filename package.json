@@ -21,7 +21,7 @@
   "build": {
     "appId": "com.example.electron-bookmarks",
     "productName": "SignedAndSandboxed",
-    "electronVersion": "1.4.13",
+    "electronVersion": "1.7.6",
     "asar": false,
     "mac": {
       "target": "mas"
@@ -35,7 +35,7 @@
     "bundle": "rollup -c scripts/rollup.config.js",
     "open": "./test/mas/SignedAndSandboxed.app/Contents/MacOS/SignedAndSandboxed",
     "test": "build && npm run open",
-    "inject": "./scripts/inject.sh && npm run open"
+    "inject": "npm run bundle && ./scripts/inject.sh && npm run open"
   },
   "keywords": [
     "electron",
@@ -52,6 +52,7 @@
     "nodobjc": "^2.1.0"
   },
   "devDependencies": {
+    "electron": "^1.7.6",
     "electron-builder": "^8.7.0",
     "rollup": "^0.41.4",
     "rollup-plugin-buble": "^0.15.0",
