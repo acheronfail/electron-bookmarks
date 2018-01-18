@@ -2,7 +2,7 @@ import buble from 'rollup-plugin-buble';
 
 const banner = `
 // electron-bookmarks, Copyright (c) by acheronfail
-// Distributed under an MIT license: https://gitlab.com/acheronfail/electron-bookmarks/blob/master/LICENSE
+// Distributed under an MIT license: https://github.com/acheronfail/electron-bookmarks/blob/master/LICENSE
 //
 // This is a library for enabling macOS sandbox Security-Scoped  bookmarks
 // inside an electron application.
