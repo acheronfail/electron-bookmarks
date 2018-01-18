@@ -364,7 +364,7 @@ const objc = {
 
     // If it is a document-scoped bookmark, save the NSURL for later use.
     if (!isAppBookmark) {
-      defaults('setURL', url, 'forKey', $(`URL:${key}`));
+      bookmark('setURL', url, 'forKey', $(`URL:${key}`));
     }
 
     defaults('setObject', bookmark, 'forKey', $(key));
