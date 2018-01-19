@@ -4,11 +4,9 @@
 
 # NEED TO KNOW
 * This module only supports `app-scoped` bookmarks at this time. (`document-scoped` bookmarks are planned, but their implementation may be more difficult).
-* **I'm not sure if this will be approved by the Mac App Store review process - since it uses `nodobjc` for native Objective-C runtime bindings. I'm in the process of releasing an app on the App Store that uses this module and will update this as soon as I know.**
-[ ](https://github.com/TooTallNate/NodObjC/issues/94)
 
 # IMPORTANT:
-**Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0**
+**Please note this is experimental software, and is not currently ready for the production environment. It is currently under active development and its API may change from version to version without notice, until this reaches version 1.0.0 (if it ever does)**
 
 # LASTLY:
 **Due to the way Objective-C is bridged to the Node process, you *MUST* use this module in `electron`'s main process. It _will not work_ in the renderer process.**
