@@ -71,15 +71,15 @@ function access(type, useBookmark) {
     if (useBookmark) {
       const bookmark = bookmarks.list().find((b) => b.path == testPath);
       if (bookmark) {
-        // Open the bookmark.
-        bookmarks.open(bookmark.key, (allowedPath, close) => {
+        // Start accessing the bookmark.
+        bookmarks.startAccessingSecurityScopedResource(bookmark.key, (allowedPath, stopAccessingSecurityScopedResource) => {
           log('Using bookmark: ' + bookmark.key);
 
-          // Access the file now the bookmark is open.
+          // Access the file now the bookmark is being accessed.
           const res = testAccess(flags, testPath);
 
-          // Make sure we close it!
-          close();
+          // Make sure we stop accessing it!
+          stopAccessingSecurityScopedResource();
 
           resolve({ title: type, message: res.message, error: res.error, useBookmark });
         });

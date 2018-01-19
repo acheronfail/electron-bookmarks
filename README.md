@@ -57,7 +57,7 @@ fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
 **To this:**
 ```javascript
 const bookmarks = require('electron-bookmarks');
-bookmarks.open(myBookmark, function (allowedPath, close) {
+bookmarks.startAccessingSecurityScopedResource(myBookmark, function (allowedPath, stopAccessingSecurityScopedResource) {
   fs.writeFile('/path/to/file', 'foo', 'utf8', function (err) {
     if (err) throw err; // null
     else {
@@ -66,8 +66,8 @@ bookmarks.open(myBookmark, function (allowedPath, close) {
       
       // ...
       
-      // Once finished, the bookmark *MUST* be closed!
-      close(); 
+      // Once finished, the access to the bookmark *MUST* be stopped!
+      stopAccessingSecurityScopedResource(); 
     }
   });
 });
@@ -99,14 +99,14 @@ Usually electron's `dialog.showOpenDialog` will return an array of filenames. `e
 
 Usually electron's `dialog.showSaveDialog` will return a path. `electron-bookmarks` returns the same path but with an additional argument `bookmark`.
 
-`bookmark.key` is the key that has just been saved to `NSUserDefaults` as an `NSData` object. This bookmark is accessible across app restarts and allow your app to access the file outside its sandbox _provided you use the APIs correctly_. Use this `key` in `bookmarks.open(key, ...)`.
+`bookmark.key` is the key that has just been saved to `NSUserDefaults` as an `NSData` object. This bookmark is accessible across app restarts and allow your app to access the file outside its sandbox _provided you use the APIs correctly_. Use this `key` in `bookmarks.startAccessingSecurityScopedResource(key, ...)`.
 
-### `bookmarks.open(key, callback)`
+### `bookmarks.startAccessingSecurityScopedResource(key, callback)`
 
 * `key` is a key returned from `bookmarks.showOpenDialog` or from `bookmarks.list`.
-* `callback(allowedPath, close)`
+* `callback(allowedPath, stopAccessingSecurityScopedResource)`
   * `allowedPath` is the path you must use in order to access your file.
-  * `close` **IMPORTANT:** this function **MUST** be called once you have finished using the file! If you do not remember to close this, _[kernel resources will be leaked](https://developer.apple.com/reference/foundation/nsurl/1417051-startaccessingsecurityscopedreso?language=objc)_ and your app will lose its ability to reach outside the sandbox completely, until your app is restarted.
+  * `stopAccessingSecurityScopedResource` **IMPORTANT:** this function **MUST** be called once you have finished using the file! If you do not remember to stop accessing the bookmark, _[kernel resources will be leaked](https://developer.apple.com/reference/foundation/nsurl/1417051-startaccessingsecurityscopedreso?language=objc)_ and your app will lose its ability to reach outside the sandbox completely, until your app is restarted.
 
 ### `bookmarks.list()`
 

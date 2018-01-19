@@ -36,12 +36,12 @@ export function list() {
 };
 
 /**
- * [open description]
+ * [startAccessingSecurityScopedResource description]
  * @param  {[type]}   key       [description]
  * @param  {Function} callback  [description]
  * @return {[type]}             [description]
  */
-export function open(key, callback) {
+export function startAccessingSecurityScopedResource(key, callback) {
   checkAppInitialized();
 
   if (!key || typeof key !== 'string') {
@@ -89,7 +89,7 @@ export function open(key, callback) {
   try {
     const err = error.deref();
     console.error({ userInfo: err('userInfo'), context: bookmark });
-    throw new Error(`[electron-bookmarks] Error opening bookmark:\nNativeError: ${err('localizedDescription')}`);
+    throw new Error(`[electron-bookmarks] Error accessing bookmark:\nNativeError: ${err('localizedDescription')}`);
   }
   catch (err) {
     if (err.message.startsWith('[electron-bookmarks]')) throw err;
@@ -116,15 +116,15 @@ export function open(key, callback) {
   // Retain the object to ensure it's not garbage-collected.
   bookmarkData('retain');
 
-  // If the user hasn't called the close function in 10 seconds, call it now.
-  // This *MUST* be called, otherwise the OS makes bad things happen.
+  // If the user hasn't called the `stopAccessingSecurityScopedResource` function in 10 seconds, 
+  // call it now. This *MUST* be called, otherwise the OS makes bad things happen.
   const timeout = setTimeout(() => {
-    close();
-    throw new Error(`Bookmark has not been closed! You *MUST* do this otherwise your app will leak kernel resources.\nForce closing "${key}" now.`);
+    stopAccessingSecurityScopedResource();
+    throw new Error(`You have not called "stopAccessingSecurityScopedResource"! You *MUST* do this otherwise your app will leak kernel resources.\nForce closing "${key}" now.`);
   }, 10e3);
 
-  // The resource *MUST* be closed, and the object released.
-  function close() {
+  // The access to the resource *MUST* be stopped, and the object released.
+  function stopAccessingSecurityScopedResource() {
     clearTimeout(timeout);
     // Stop accessing the bookmarked resource.
     if (didAccess) bookmarkData('stopAccessingSecurityScopedResource');
@@ -132,9 +132,9 @@ export function open(key, callback) {
     bookmarkData('release');
   }
 
-  // Call the user's callback passing a correct path and the close function.
+  // Call the user's callback passing a correct path and the `stopAccessingSecurityScopedResource` function.
   const filepath = bookmarkData('path')('UTF8String');
-  callback(filepath, close);
+  callback(filepath, stopAccessingSecurityScopedResource);
 };
 
 /**
