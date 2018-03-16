@@ -1,5 +1,19 @@
 # Electron Bookmarks!
 
+# Please Note!
+
+This functionality has been added into Electron itself here: https://github.com/electron/electron/pull/11711
+This package should no longer be used (it wasn't ever stable anyway), so just use Electron 2.0.0 or greater.
+
+---
+
+<br />
+<br />
+<br />
+<br />
+
+---
+
 ## This module enables you to use sandboxed [`Security-Scoped Bookmarks`](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW18) inside of an electron application.
 
 # NEED TO KNOW
