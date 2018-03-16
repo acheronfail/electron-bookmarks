@@ -2,7 +2,7 @@
 
 # Please Note!
 
-This functionality has been added into Electron itself here: https://github.com/electron/electron/pull/11711
+This functionality has been added into Electron itself here: https://github.com/electron/electron/pull/11711  
 This package should no longer be used (it wasn't ever stable anyway), so just use Electron 2.0.0 or greater.
 
 ---
